@@ -88,6 +88,15 @@ export function MoonIcon({ className, size = 16 }: IconProps) {
   )
 }
 
+export function HeartPulseIcon({ className, size = 20 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M19 14c1.5-1.5 3-3.4 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5c0 2.1 1.5 4 3 5.5l7 7z" />
+      <path d="M3.5 12h4l1.5-3 2.5 6 1.5-3h4" />
+    </svg>
+  )
+}
+
 export function CalculatorIcon({ className, size = 24 }: IconProps) {
   return (
     <svg {...base(size)} className={className}>

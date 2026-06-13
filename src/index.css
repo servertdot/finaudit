@@ -22,6 +22,8 @@
   --color-pos-soft: #eaf4ee;
   --color-neg: #b8412f;
   --color-neg-soft: #f7ece8;
+  --color-warn: #b07d1a;
+  --color-warn-soft: #f6efdd;
   --color-accent: #16150f;
 
   /* Палитра графиков (приглушённая, согласованная) */
@@ -56,6 +58,8 @@
   --color-pos-soft: #1d2a10;
   --color-neg: #f08a6f;
   --color-neg-soft: #2c1a13;
+  --color-warn: #ecc94b;
+  --color-warn-soft: #2a2410;
   --color-accent: #c5f06b;
 
   --color-c1: #bdee63;

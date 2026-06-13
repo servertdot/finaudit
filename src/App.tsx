@@ -2,12 +2,14 @@ import { useRef } from 'react'
 import { Header } from './components/Header'
 import { Toolbar } from './components/Toolbar'
 import { SummaryPanel } from './components/SummaryPanel'
+import { HealthPanel } from './components/HealthPanel'
 import { ExpensesPanel } from './components/ExpensesPanel'
 import { SimpleListPanel } from './components/SimpleListPanel'
 import { ChartsPanel } from './components/ChartsPanel'
 import { ClockIcon, WalletIcon } from './components/icons'
 import {
   useFinanceActions,
+  useFinanceHealth,
   useFinanceState,
   useFinanceSummary,
 } from './store/useFinanceStore'
@@ -16,6 +18,7 @@ import { useTheme } from './lib/theme'
 function App() {
   const state = useFinanceState()
   const summary = useFinanceSummary()
+  const health = useFinanceHealth()
   const actions = useFinanceActions()
   const { theme, toggleTheme } = useTheme()
   const captureRef = useRef<HTMLDivElement>(null)
@@ -77,6 +80,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-1 gap-6">
+            <HealthPanel health={health} />
             <ChartsPanel state={state} summary={summary} theme={theme} />
           </div>
         </div>

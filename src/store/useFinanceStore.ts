@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { useShallow } from 'zustand/react/shallow'
@@ -10,6 +11,7 @@ import type {
   Summary,
 } from '../types'
 import { computeSummary } from '../lib/calc'
+import { computeHealth, type HealthReport } from '../lib/health'
 import { uid } from '../lib/id'
 import { createSampleData } from '../lib/sampleData'
 import { STORAGE_KEY, financeStorage, normalizeState } from '../lib/storage'
@@ -129,6 +131,14 @@ export function useFinanceActions(): FinanceActions {
 
 export function useFinanceSummary(): Summary {
   return useFinanceStore(useShallow((s) => computeSummary(s)))
+}
+
+export function useFinanceHealth(): HealthReport {
+  const state = useFinanceState()
+  const summary = useFinanceSummary()
+  // computeHealth возвращает объект с вложенными массивами — мемоизируем,
+  // чтобы не отдавать новую ссылку на каждый рендер (иначе бесконечный цикл).
+  return useMemo(() => computeHealth(state, summary), [state, summary])
 }
 
 export type { ExpenseType }
