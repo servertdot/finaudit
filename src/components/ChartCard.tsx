@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import type { ReactNode } from 'react'
 import { formatMoney } from '../lib/format'
 import type { ChartColumns, ChartType } from '../lib/chartsConfig'
 
@@ -75,8 +76,10 @@ export function ChartCard({
 
   const total = data.reduce((acc, d) => acc + d.value, 0)
 
-  const formatValue = (value: number | string): string => {
-    const num = Number(value)
+  const formatValue = (
+    value: number | string | ReadonlyArray<number | string> | undefined,
+  ): string => {
+    const num = Number(Array.isArray(value) ? value[0] : value)
     if (showPercent && total > 0) {
       return `${formatMoney(num)} · ${((num / total) * 100).toFixed(1)}%`
     }
@@ -119,7 +122,7 @@ export function ChartCard({
               <LabelList
                 dataKey="value"
                 position="top"
-                formatter={(value: number) =>
+                formatter={(value: ReactNode) =>
                   `${((Number(value) / total) * 100).toFixed(1)}%`
                 }
                 style={{ fontSize: 11, fill: tokens.tickSoft }}
