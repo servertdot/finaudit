@@ -6,9 +6,10 @@ import { SummaryPanel } from './components/SummaryPanel'
 import { HealthPanel } from './components/HealthPanel'
 import { HistoryPanel } from './components/HistoryPanel'
 import { ExpensesPanel } from './components/ExpensesPanel'
+import { AssetsPanel } from './components/AssetsPanel'
 import { SimpleListPanel } from './components/SimpleListPanel'
 import { ChartsPanel } from './components/ChartsPanel'
-import { ClockIcon, WalletIcon } from './components/icons'
+import { ClockIcon } from './components/icons'
 import {
   useActiveNote,
   useFinanceActions,
@@ -71,15 +72,11 @@ function App() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <SummaryPanel summary={summary} />
 
-            <SimpleListPanel
-              title="Активы"
-              accent="slate"
-              icon={<WalletIcon size={18} className="text-ink-soft" />}
+            <AssetsPanel
               items={state.assets}
               onAdd={actions.addAsset}
               onUpdate={actions.updateAsset}
               onRemove={actions.removeAsset}
-              addTitle="Добавить актив"
             />
 
             <ExpensesPanel

@@ -13,10 +13,18 @@ export interface IncomeItem {
   amount: number
 }
 
+/** Вид актива: влияет на ликвидность по умолчанию. */
+export type AssetType = 'cash' | 'account' | 'deposit' | 'investment' | 'other'
+
 export interface AssetItem {
   id: string
   name: string
+  type: AssetType
+  /** Доступен ли актив сразу (учитывается в финансовой подушке). */
+  liquid: boolean
   amount: number
+  /** Ставка % годовых для доходных активов (вклад/инвестиции). */
+  rate?: number
 }
 
 export interface FinanceState {

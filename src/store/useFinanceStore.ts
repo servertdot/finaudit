@@ -15,6 +15,7 @@ import type {
 import { computeSummary } from '../lib/calc'
 import { computeHealth, type HealthReport } from '../lib/health'
 import { computeHistory, type HistoryReport } from '../lib/history'
+import { grownNextMonth } from '../lib/assets'
 import { uid } from '../lib/id'
 import { compareMonthAsc, nextMonth } from '../lib/period'
 import { createEmptyData, createSampleData } from '../lib/sampleData'
@@ -63,7 +64,8 @@ function cloneSnapshot(src: MonthlySnapshot, month: string): MonthlySnapshot {
     month,
     expenses: src.expenses.map((e) => ({ ...e, id: uid() })),
     incomes: src.incomes.map((i) => ({ ...i, id: uid() })),
-    assets: src.assets.map((a) => ({ ...a, id: uid() })),
+    // Доходные активы за новый месяц подрастают на накопленный процент.
+    assets: src.assets.map((a) => ({ ...a, id: uid(), amount: grownNextMonth(a) })),
   }
 }
 
@@ -125,7 +127,10 @@ export const useFinanceStore = create<FinanceStore>()(
         set((s) =>
           patchActive(s, (snap) => ({
             ...snap,
-            assets: [...snap.assets, { id: uid(), name: '', amount: 0 }],
+            assets: [
+              ...snap.assets,
+              { id: uid(), name: '', type: 'cash', liquid: true, amount: 0 },
+            ],
           })),
         ),
       updateAsset: (id, patch) =>

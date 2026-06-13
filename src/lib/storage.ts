@@ -7,6 +7,7 @@ import type {
   IncomeItem,
   MonthlySnapshot,
 } from '../types'
+import { defaultLiquidFor, isAssetType } from './assets'
 import { uid } from './id'
 import { compareMonthAsc, currentMonthKey, isMonthKey } from './period'
 
@@ -32,7 +33,7 @@ function normalizeExpenses(raw: unknown): ExpenseItem[] {
   })
 }
 
-function normalizeFlat(raw: unknown): (IncomeItem | AssetItem)[] {
+function normalizeIncomes(raw: unknown): IncomeItem[] {
   if (!Array.isArray(raw)) return []
   return raw.map((item) => {
     const obj = (item ?? {}) as Record<string, unknown>
@@ -44,6 +45,23 @@ function normalizeFlat(raw: unknown): (IncomeItem | AssetItem)[] {
   })
 }
 
+function normalizeAssets(raw: unknown): AssetItem[] {
+  if (!Array.isArray(raw)) return []
+  return raw.map((item) => {
+    const obj = (item ?? {}) as Record<string, unknown>
+    const type = isAssetType(obj.type) ? obj.type : 'cash'
+    const rate = obj.rate == null ? undefined : toNumber(obj.rate)
+    return {
+      id: typeof obj.id === 'string' ? obj.id : uid(),
+      name: typeof obj.name === 'string' ? obj.name : '',
+      type,
+      liquid: typeof obj.liquid === 'boolean' ? obj.liquid : defaultLiquidFor(type),
+      amount: toNumber(obj.amount),
+      ...(rate && rate > 0 ? { rate } : {}),
+    }
+  })
+}
+
 /** Нормализует одиночный плоский снимок (старый формат / импорт одного месяца). */
 export function normalizeState(raw: unknown): FinanceState | null {
   if (!raw || typeof raw !== 'object') return null
@@ -51,8 +69,8 @@ export function normalizeState(raw: unknown): FinanceState | null {
   return {
     user: typeof obj.user === 'string' ? obj.user : DEFAULT_USER,
     expenses: normalizeExpenses(obj.expenses),
-    incomes: normalizeFlat(obj.incomes) as IncomeItem[],
-    assets: normalizeFlat(obj.assets) as AssetItem[],
+    incomes: normalizeIncomes(obj.incomes),
+    assets: normalizeAssets(obj.assets),
   }
 }
 
@@ -62,8 +80,8 @@ function normalizeSnapshot(raw: unknown, fallbackMonth: string): MonthlySnapshot
     month: isMonthKey(obj.month) ? (obj.month as string) : fallbackMonth,
     note: typeof obj.note === 'string' ? obj.note : undefined,
     expenses: normalizeExpenses(obj.expenses),
-    incomes: normalizeFlat(obj.incomes) as IncomeItem[],
-    assets: normalizeFlat(obj.assets) as AssetItem[],
+    incomes: normalizeIncomes(obj.incomes),
+    assets: normalizeAssets(obj.assets),
   }
 }
 

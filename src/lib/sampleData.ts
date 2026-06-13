@@ -1,11 +1,12 @@
-import type { FinanceData, MonthlySnapshot } from '../types'
+import type { AssetType, FinanceData, MonthlySnapshot } from '../types'
+import { defaultLiquidFor } from './assets'
 import { uid } from './id'
 import { currentMonthKey, prevMonth } from './period'
 
 interface MonthShape {
   expenses: { name: string; type: 'FC' | 'VC'; amount: number }[]
   incomes: { name: string; amount: number }[]
-  assets: { name: string; amount: number }[]
+  assets: { name: string; type: AssetType; amount: number; liquid?: boolean; rate?: number }[]
 }
 
 function buildSnapshot(month: string, shape: MonthShape): MonthlySnapshot {
@@ -13,7 +14,11 @@ function buildSnapshot(month: string, shape: MonthShape): MonthlySnapshot {
     month,
     expenses: shape.expenses.map((e) => ({ id: uid(), ...e })),
     incomes: shape.incomes.map((i) => ({ id: uid(), ...i })),
-    assets: shape.assets.map((a) => ({ id: uid(), ...a })),
+    assets: shape.assets.map((a) => ({
+      ...a,
+      id: uid(),
+      liquid: a.liquid ?? defaultLiquidFor(a.type),
+    })),
   }
 }
 
@@ -41,9 +46,10 @@ function shapeFor(index: number): MonthShape {
       { name: 'Кэшбэк', amount: 16 },
     ],
     assets: [
-      { name: 'Подушка', amount: savings },
-      { name: 'Экстренный фонд', amount: 2000 + index * 500 },
-      { name: 'Инвестиции', amount: 5000 + index * 1200 },
+      { name: 'Наличные', type: 'cash', amount: 2000 + index * 200 },
+      { name: 'Счёт в банке', type: 'account', amount: 2000 + index * 500 },
+      { name: 'Вклад под %', type: 'deposit', amount: savings, rate: 16 },
+      { name: 'Инвестиции', type: 'investment', amount: 5000 + index * 1200, rate: 10 },
     ],
   }
 }

@@ -35,7 +35,9 @@ const sum = (items: { amount: number }[]) =>
 
 export function computeHealth(state: FinanceState, summary: Summary): HealthReport {
   const { income, expenses, net, fixed, variable } = summary
-  const assets = sum(state.assets)
+  // Для подушки считаем только ликвидные активы: вклад под процент
+  // и инвестиции обычно недоступны мгновенно, поэтому в запас не идут.
+  const assets = sum(state.assets.filter((a) => a.liquid))
 
   // --- Норма сбережений: какая доля дохода остаётся ---
   const savingsRate = income > 0 ? (net / income) * 100 : 0
