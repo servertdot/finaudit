@@ -1,15 +1,15 @@
 import { useRef, useState } from 'react'
-import type { FinanceState } from '../types'
+import type { FinanceData } from '../types'
 import type { Theme } from '../lib/theme'
 import { exportJson, exportPng, readImportFile } from '../lib/exporter'
 import { ThemeToggle } from './ThemeToggle'
 
 interface ToolbarProps {
-  state: FinanceState
+  data: FinanceData
   captureRef: React.RefObject<HTMLDivElement | null>
   theme: Theme
   onToggleTheme: () => void
-  onImport: (state: FinanceState) => void
+  onImport: (data: FinanceData) => void
   onResetSample: () => void
   onClear: () => void
 }
@@ -47,7 +47,7 @@ function ToolbarButton({
 }
 
 export function Toolbar({
-  state,
+  data,
   captureRef,
   theme,
   onToggleTheme,
@@ -88,7 +88,7 @@ export function Toolbar({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <ToolbarButton variant="primary" onClick={() => exportJson(state)}>
+      <ToolbarButton variant="primary" onClick={() => exportJson(data)}>
         Экспорт JSON
       </ToolbarButton>
       <ToolbarButton onClick={() => fileRef.current?.click()}>

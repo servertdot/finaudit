@@ -1,43 +1,71 @@
-import type { FinanceState } from '../types'
+import type { FinanceData, MonthlySnapshot } from '../types'
 import { uid } from './id'
+import { currentMonthKey, prevMonth } from './period'
 
-export function createSampleData(): FinanceState {
+interface MonthShape {
+  expenses: { name: string; type: 'FC' | 'VC'; amount: number }[]
+  incomes: { name: string; amount: number }[]
+  assets: { name: string; amount: number }[]
+}
+
+function buildSnapshot(month: string, shape: MonthShape): MonthlySnapshot {
   return {
-    user: 'Андрей',
+    month,
+    expenses: shape.expenses.map((e) => ({ id: uid(), ...e })),
+    incomes: shape.incomes.map((i) => ({ id: uid(), ...i })),
+    assets: shape.assets.map((a) => ({ id: uid(), ...a })),
+  }
+}
+
+/** Снимок месяца с лёгкой вариацией — для правдоподобной демо-истории. */
+function shapeFor(index: number): MonthShape {
+  // index 0 — самый старый, чем больше — тем «свежее».
+  const bump = index * 30
+  const incomeBase = 4200 + index * 90
+  const savings = 30000 + index * 1450
+  return {
     expenses: [
-      { id: uid(), name: 'Продукты', type: 'FC', amount: 515 },
-      { id: uid(), name: 'Кафе', type: 'VC', amount: 207 },
-      { id: uid(), name: 'Транспорт', type: 'FC', amount: 26 },
-      { id: uid(), name: 'Жилье', type: 'FC', amount: 690 },
-      { id: uid(), name: 'Связь', type: 'VC', amount: 19 },
-      { id: uid(), name: 'Подписки', type: 'FC', amount: 20 },
-      { id: uid(), name: 'Одежда', type: 'VC', amount: 35 },
-      { id: uid(), name: 'Здоровье', type: 'FC', amount: 100 },
-      { id: uid(), name: 'Подарки', type: 'FC', amount: 345 },
+      { name: 'Жилье', type: 'FC', amount: 690 },
+      { name: 'Продукты', type: 'FC', amount: 480 + bump },
+      { name: 'Транспорт', type: 'FC', amount: 26 },
+      { name: 'Подписки', type: 'FC', amount: 20 },
+      { name: 'Здоровье', type: 'FC', amount: 100 },
+      { name: 'Кафе', type: 'VC', amount: 180 + bump },
+      { name: 'Одежда', type: 'VC', amount: 35 + index * 8 },
+      { name: 'Связь', type: 'VC', amount: 19 },
     ],
     incomes: [
-      { id: uid(), name: 'Менторство', amount: 0 },
-      { id: uid(), name: 'Проценты/дивиденды', amount: 0 },
-      { id: uid(), name: 'РАботы', amount: 4412 },
-      { id: uid(), name: 'Арендная плата/роялти', amount: 0 },
-      { id: uid(), name: 'Кэшбэк', amount: 16 },
-      { id: uid(), name: 'Бусти', amount: 0 },
+      { name: 'Работа', amount: incomeBase },
+      { name: 'Менторство', amount: index * 40 },
+      { name: 'Проценты/дивиденды', amount: 12 + index * 3 },
+      { name: 'Кэшбэк', amount: 16 },
     ],
     assets: [
-      { id: uid(), name: 'Подушка', amount: 30217 },
-      { id: uid(), name: 'Экстренный фонд', amount: 0 },
-      { id: uid(), name: 'Инвестиции сейчас', amount: 0 },
-      { id: uid(), name: 'Инвестировано за период', amount: 0 },
-      { id: uid(), name: 'Вывод из инвестиций', amount: 0 },
+      { name: 'Подушка', amount: savings },
+      { name: 'Экстренный фонд', amount: 2000 + index * 500 },
+      { name: 'Инвестиции', amount: 5000 + index * 1200 },
     ],
   }
 }
 
-export function createEmptyData(): FinanceState {
+export function createSampleData(): FinanceData {
+  const now = currentMonthKey()
+  // Шесть месяцев: от пяти месяцев назад до текущего.
+  const keys: string[] = []
+  let k = now
+  for (let i = 0; i < 6; i++) {
+    keys.unshift(k)
+    k = prevMonth(k)
+  }
+  const months = keys.map((month, i) => buildSnapshot(month, shapeFor(i)))
+  return { user: 'Андрей', activeMonth: now, months }
+}
+
+export function createEmptyData(): FinanceData {
+  const month = currentMonthKey()
   return {
     user: 'Пользователь',
-    expenses: [],
-    incomes: [],
-    assets: [],
+    activeMonth: month,
+    months: [{ month, expenses: [], incomes: [], assets: [] }],
   }
 }

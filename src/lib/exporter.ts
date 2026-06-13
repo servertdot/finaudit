@@ -1,6 +1,6 @@
 import { toPng } from 'html-to-image'
-import type { FinanceState } from '../types'
-import { normalizeState } from './storage'
+import type { FinanceData } from '../types'
+import { normalizePersisted } from './storage'
 
 function triggerDownload(href: string, filename: string) {
   const link = document.createElement('a')
@@ -15,8 +15,8 @@ function dateStamp(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
-export function exportJson(state: FinanceState): void {
-  const payload = JSON.stringify(state, null, 2)
+export function exportJson(data: FinanceData): void {
+  const payload = JSON.stringify(data, null, 2)
   const blob = new Blob([payload], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   triggerDownload(url, `finaudit-${dateStamp()}.json`)
@@ -39,18 +39,18 @@ export async function exportPng(node: HTMLElement): Promise<void> {
   triggerDownload(dataUrl, `finaudit-${dateStamp()}.png`)
 }
 
-export function readImportFile(file: File): Promise<FinanceState> {
+export function readImportFile(file: File): Promise<FinanceData> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
       try {
         const parsed = JSON.parse(String(reader.result))
-        const state = normalizeState(parsed)
-        if (!state) {
+        const data = normalizePersisted(parsed)
+        if (!data) {
           reject(new Error('Файл не содержит корректных данных'))
           return
         }
-        resolve(state)
+        resolve(data)
       } catch {
         reject(new Error('Не удалось прочитать JSON-файл'))
       }

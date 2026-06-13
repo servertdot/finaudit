@@ -1,30 +1,43 @@
 import { useRef } from 'react'
 import { Header } from './components/Header'
 import { Toolbar } from './components/Toolbar'
+import { PeriodBar } from './components/PeriodBar'
 import { SummaryPanel } from './components/SummaryPanel'
 import { HealthPanel } from './components/HealthPanel'
+import { HistoryPanel } from './components/HistoryPanel'
 import { ExpensesPanel } from './components/ExpensesPanel'
 import { SimpleListPanel } from './components/SimpleListPanel'
 import { ChartsPanel } from './components/ChartsPanel'
 import { ClockIcon, WalletIcon } from './components/icons'
 import {
+  useActiveNote,
   useFinanceActions,
+  useFinanceData,
   useFinanceHealth,
+  useFinanceHistory,
   useFinanceState,
   useFinanceSummary,
 } from './store/useFinanceStore'
+import { formatMonth } from './lib/period'
 import { useTheme } from './lib/theme'
 
 function App() {
   const state = useFinanceState()
+  const data = useFinanceData()
+  const note = useActiveNote()
   const summary = useFinanceSummary()
   const health = useFinanceHealth()
+  const history = useFinanceHistory()
   const actions = useFinanceActions()
   const { theme, toggleTheme } = useTheme()
   const captureRef = useRef<HTMLDivElement>(null)
 
   const handleClear = () => {
-    if (window.confirm('Очистить все категории, доходы и активы?')) {
+    if (
+      window.confirm(
+        `Очистить данные за «${formatMonth(data.activeMonth)}» (категории, доходы и активы)?`,
+      )
+    ) {
       actions.clearAll()
     }
   }
@@ -35,13 +48,23 @@ function App() {
         <Header user={state.user} onUserChange={actions.setUser} />
 
         <Toolbar
-          state={state}
+          data={data}
           captureRef={captureRef}
           theme={theme}
           onToggleTheme={toggleTheme}
-          onImport={actions.replaceState}
+          onImport={actions.importData}
           onResetSample={actions.resetToSample}
           onClear={handleClear}
+        />
+
+        <PeriodBar
+          months={data.months}
+          activeMonth={data.activeMonth}
+          note={note}
+          onSelect={actions.setActiveMonth}
+          onAddMonth={actions.addMonth}
+          onRemoveMonth={actions.removeMonth}
+          onNoteChange={actions.setMonthNote}
         />
 
         <div ref={captureRef} className="flex flex-col gap-6">
@@ -81,6 +104,7 @@ function App() {
 
           <div className="grid grid-cols-1 gap-6">
             <HealthPanel health={health} />
+            <HistoryPanel history={history} theme={theme} />
             <ChartsPanel state={state} summary={summary} theme={theme} />
           </div>
         </div>

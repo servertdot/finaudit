@@ -88,6 +88,39 @@ export function MoonIcon({ className, size = 16 }: IconProps) {
   )
 }
 
+export function ChevronLeftIcon({ className, size = 18 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  )
+}
+
+export function ChevronRightIcon({ className, size = 18 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M9 18l6-6-6-6" />
+    </svg>
+  )
+}
+
+export function CalendarIcon({ className, size = 18 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <rect x="3" y="4" width="18" height="17" rx="2" />
+      <path d="M3 9h18M8 2v4M16 2v4" />
+    </svg>
+  )
+}
+
+export function PlusIcon({ className, size = 16 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  )
+}
+
 export function HeartPulseIcon({ className, size = 20 }: IconProps) {
   return (
     <svg {...base(size)} className={className}>
