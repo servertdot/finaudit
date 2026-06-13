@@ -121,6 +121,16 @@ export function PlusIcon({ className, size = 16 }: IconProps) {
   )
 }
 
+export function InfoIcon({ className, size = 15 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5" />
+      <path d="M12 8h.01" />
+    </svg>
+  )
+}
+
 export function HeartPulseIcon({ className, size = 20 }: IconProps) {
   return (
     <svg {...base(size)} className={className}>
