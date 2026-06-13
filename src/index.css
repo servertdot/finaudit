@@ -1,0 +1,109 @@
+@import 'tailwindcss';
+
+/* --- Дизайн-токены: спокойная редакторская палитра «paper / ink» --- */
+@theme {
+  --font-sans: 'Inter Tight', 'Helvetica Neue', Helvetica, -apple-system,
+    'Segoe UI', Roboto, Arial, sans-serif;
+  --font-serif: 'Instrument Serif', 'Georgia', 'Times New Roman', serif;
+
+  /* Поверхности */
+  --color-paper: #f4f3ef;
+  --color-surface: #fbfbf9;
+  --color-line: #e6e4dd;
+  --color-line-strong: #d8d5cc;
+
+  /* Текст */
+  --color-ink: #16150f;
+  --color-ink-soft: #57544a;
+  --color-muted: #8f8b7e;
+
+  /* Семантика */
+  --color-pos: #1f7a55;
+  --color-pos-soft: #eaf4ee;
+  --color-neg: #b8412f;
+  --color-neg-soft: #f7ece8;
+  --color-accent: #16150f;
+
+  /* Палитра графиков (приглушённая, согласованная) */
+  --color-c1: #2f6f5b;
+  --color-c2: #c2603f;
+  --color-c3: #d9a441;
+  --color-c4: #4a6b8a;
+  --color-c5: #8d6a9f;
+  --color-c6: #b34a5e;
+  --color-c7: #6b8e5a;
+  --color-c8: #a98a5c;
+}
+
+:root {
+  color-scheme: light;
+}
+
+/* --- Тёмная тема: editorial «олива + лайм» --- */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-paper: #0f160a;
+  --color-surface: #18230f;
+  --color-line: #2a3a1d;
+  --color-line-strong: #3b4f29;
+
+  --color-ink: #f1f4ea;
+  --color-ink-soft: #bcc8a8;
+  --color-muted: #899679;
+
+  --color-pos: #bdee63;
+  --color-pos-soft: #1d2a10;
+  --color-neg: #f08a6f;
+  --color-neg-soft: #2c1a13;
+  --color-accent: #c5f06b;
+
+  --color-c1: #bdee63;
+  --color-c2: #f0915f;
+  --color-c3: #ecc94b;
+  --color-c4: #6db1d8;
+  --color-c5: #c08fd6;
+  --color-c6: #ee7d8f;
+  --color-c7: #9fd06a;
+  --color-c8: #d6b15f;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: 'cv11', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Editorial-числа с засечками */
+.font-display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Скрыть стрелки у числовых инпутов */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
