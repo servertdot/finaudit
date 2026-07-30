@@ -5,25 +5,23 @@ interface HeaderProps {
 
 export function Header({ user, onUserChange }: HeaderProps) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-6 border-b border-line-strong pb-6">
-      <div className="flex flex-col gap-1.5">
-        <span className="text-[11px] font-medium uppercase tracking-[0.28em] text-muted">
-          Личные финансы
-        </span>
-        <h1 className="font-display text-4xl leading-none text-accent sm:text-5xl">
+    <header className="masthead flex flex-wrap items-end justify-between gap-5">
+      <div className="flex flex-col gap-2">
+        <span className="eyebrow">Личные финансы</span>
+        <h1 className="display-title text-ink">
           Финансовый аудит
         </h1>
+        <span className="device-status">Все изменения сохранены на устройстве</span>
       </div>
 
-      <label className="group flex flex-col gap-1.5">
-        <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-muted">
-          Пользователь
-        </span>
+      <label className="group flex min-w-48 flex-col gap-1.5">
+        <span className="px-1 text-[12px] font-medium text-muted">Профиль</span>
         <input
           value={user}
           onChange={(e) => onUserChange(e.target.value)}
           placeholder="Имя"
-          className="w-44 border-b border-line-strong bg-transparent pb-1 text-lg text-ink outline-none transition-colors placeholder:text-muted focus:border-ink"
+          aria-label="Пользователь"
+          className="field w-full px-3 py-2 text-[15px] font-medium placeholder:text-muted"
         />
       </label>
     </header>

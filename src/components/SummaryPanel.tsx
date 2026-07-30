@@ -13,7 +13,7 @@ interface SummaryRowProps {
 function Row({ label, value, valueClass = 'text-ink', emphasis = false }: SummaryRowProps) {
   return (
     <div className="flex items-baseline justify-between gap-3 border-b border-line py-2.5 last:border-b-0">
-      <span className={`text-[13px] ${emphasis ? 'text-ink' : 'text-ink-soft'}`}>
+      <span className={`text-[13px] ${emphasis ? 'font-medium text-ink' : 'text-ink-soft'}`}>
         {label}
       </span>
       <span className={`text-[15px] font-medium tabular-nums ${valueClass}`}>
@@ -32,13 +32,13 @@ export function SummaryPanel({ summary }: { summary: Summary }) {
       icon={<TrendIcon size={18} className="text-ink" />}
     >
       {/* Герой: свободный остаток */}
-      <div className="mb-5 flex flex-col gap-1 border-b border-line pb-5">
-        <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-muted">
+      <div className="mb-4 flex flex-col gap-1 border-b border-line pb-5 pt-1">
+        <span className="text-[12px] font-medium text-muted">
           Свободный остаток
         </span>
         <div className="flex items-baseline gap-2">
           <span
-            className={`font-display text-5xl leading-none tabular-nums ${
+            className={`font-display text-[3.25rem] leading-none tabular-nums ${
               positive ? 'text-ink' : 'text-neg'
             }`}
           >

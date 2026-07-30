@@ -44,8 +44,8 @@ function App() {
   }
 
   return (
-    <div className="min-h-full bg-paper px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
-      <div className="mx-auto flex max-w-6xl flex-col gap-7">
+    <div className="app-shell px-3 py-5 sm:px-6 sm:py-8 lg:px-10 lg:py-10">
+      <div className="app-container flex flex-col gap-5 sm:gap-6">
         <Header user={state.user} onUserChange={actions.setUser} />
 
         <Toolbar
@@ -68,8 +68,8 @@ function App() {
           onNoteChange={actions.setMonthNote}
         />
 
-        <div ref={captureRef} className="flex flex-col gap-6">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div ref={captureRef} className="flex flex-col gap-5 sm:gap-6">
+          <div className="grid grid-cols-1 gap-5 sm:gap-6 lg:grid-cols-2">
             <SummaryPanel summary={summary} />
 
             <AssetsPanel
@@ -99,15 +99,15 @@ function App() {
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-5 sm:gap-6">
             <HealthPanel health={health} />
             <HistoryPanel history={history} theme={theme} />
             <ChartsPanel state={state} summary={summary} theme={theme} />
           </div>
         </div>
 
-        <footer className="border-t border-line pt-5 text-center text-[12px] text-muted">
-          Данные хранятся локально в вашем браузере · Финансовый аудит · {state.user}
+        <footer className="px-2 pb-2 pt-3 text-center text-[12px] leading-relaxed text-muted">
+          Финансовый аудит · Данные остаются на этом устройстве · {state.user}
         </footer>
       </div>
     </div>

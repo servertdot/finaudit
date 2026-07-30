@@ -6,7 +6,7 @@ import { HeartPulseIcon } from './icons'
 
 function Formula({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded bg-paper px-1.5 py-0.5 font-mono text-[11px] text-ink">
+    <span className="rounded-md bg-paper px-1.5 py-0.5 font-mono text-[11px] text-ink">
       {children}
     </span>
   )
@@ -72,7 +72,7 @@ const statusDot: Record<HealthStatus, string> = {
 function MetricCard({ metric }: { metric: HealthMetric }) {
   const hint = METRIC_HINTS[metric.id]
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-line bg-paper/40 p-4">
+    <div className="flex flex-col gap-2 rounded-[0.95rem] bg-paper p-4">
       <div className="flex items-center justify-between gap-2">
         <span className="flex items-center gap-1 text-[12px] text-ink-soft">
           {metric.label}
@@ -139,7 +139,7 @@ export function HealthPanel({ health }: { health: HealthReport }) {
     >
       <div className="mb-5 flex items-end justify-between gap-3 border-b border-line pb-5">
         <div className="flex flex-col gap-1">
-          <span className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.22em] text-muted">
+          <span className="flex items-center gap-1.5 text-[12px] font-medium text-muted">
             Общая оценка
             <InfoHint title="Общая оценка" align="left">
               <p>
@@ -164,7 +164,7 @@ export function HealthPanel({ health }: { health: HealthReport }) {
 
       <div className="mt-5 border-t border-line pt-5">
         <div className="mb-3 flex items-baseline justify-between gap-2">
-          <h3 className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink">
+          <h3 className="flex items-center gap-1.5 text-[13px] font-semibold text-ink">
             Правило 50/30/20
             <InfoHint title="Правило 50/30/20" align="left">
               <p>

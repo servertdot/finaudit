@@ -44,7 +44,7 @@ interface ChartCardProps {
 }
 
 const chartTitleClass =
-  'mb-3 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-muted'
+  'mb-3 text-center text-[13px] font-semibold tracking-[-0.01em] text-ink-soft'
 
 const SIZE_BY_COLUMNS: Record<
   ChartColumns,
@@ -66,12 +66,12 @@ export function ChartCard({
 }: ChartCardProps) {
   const size = SIZE_BY_COLUMNS[columns]
   const tooltipStyle = {
-    borderRadius: 8,
+    borderRadius: 12,
     border: `1px solid ${tokens.tipBorder}`,
     background: tokens.tipBg,
     fontSize: 12,
     color: tokens.tipText,
-    boxShadow: 'none',
+    boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
   }
 
   const total = data.reduce((acc, d) => acc + d.value, 0)
@@ -114,7 +114,7 @@ export function ChartCard({
             labelStyle={{ color: tokens.tipText }}
             cursor={{ fill: tokens.cursor }}
           />
-          <Bar dataKey="value" name="Сумма" radius={[4, 4, 0, 0]}>
+          <Bar dataKey="value" name="Сумма" radius={[7, 7, 0, 0]}>
             {data.map((_, i) => (
               <Cell key={i} fill={colors[i % colors.length]} />
             ))}

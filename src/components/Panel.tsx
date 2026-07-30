@@ -30,11 +30,11 @@ export function Panel({
 }: PanelProps) {
   return (
     <section
-      className={`flex flex-col overflow-hidden rounded-xl border border-line bg-surface ${className}`}
+      className={`panel flex flex-col overflow-hidden ${className}`}
     >
-      <header className="flex items-center justify-between gap-2 border-b border-line px-5 py-4">
-        <h2 className="flex items-center gap-2.5 text-[13px] font-semibold uppercase tracking-[0.14em] text-ink">
-          <span className={accentStyles[accent]}>{icon}</span>
+      <header className="panel-header flex items-center justify-between gap-2">
+        <h2 className="panel-title flex items-center gap-2.5 text-ink">
+          <span className={`panel-icon ${accentStyles[accent]}`}>{icon}</span>
           <span>{title}</span>
         </h2>
         {onAdd && (
@@ -43,7 +43,7 @@ export function Panel({
             onClick={onAdd}
             title={addTitle}
             aria-label={addTitle}
-            className="flex h-7 w-7 items-center justify-center rounded-full border border-line-strong text-ink-soft transition-colors hover:border-ink hover:text-ink"
+            className="icon-button"
           >
             <svg
               width="15"
@@ -59,7 +59,7 @@ export function Panel({
           </button>
         )}
       </header>
-      <div className="flex-1 px-5 py-5">{children}</div>
+      <div className="flex-1 px-4 pb-5 pt-2 sm:px-5 sm:pb-5">{children}</div>
     </section>
   )
 }

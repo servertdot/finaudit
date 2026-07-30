@@ -28,18 +28,16 @@ function ToolbarButton({
   disabled?: boolean
 }) {
   const styles = {
-    default:
-      'border-line-strong bg-surface text-ink-soft hover:border-ink hover:text-ink',
-    primary: 'border-accent bg-accent text-paper hover:opacity-90',
-    danger:
-      'border-line-strong bg-surface text-neg hover:border-neg hover:bg-neg-soft',
+    default: 'toolbar-button-default',
+    primary: 'toolbar-button-primary',
+    danger: 'toolbar-button-danger',
   }[variant]
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-full border px-4 py-1.5 text-[13px] font-medium tracking-tight transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${styles}`}
+      className={`toolbar-button shrink-0 disabled:cursor-not-allowed disabled:opacity-45 ${styles}`}
     >
       {children}
     </button>
@@ -87,7 +85,7 @@ export function Toolbar({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="action-bar material-bar flex items-center gap-1">
       <ToolbarButton variant="primary" onClick={() => exportJson(data)}>
         Экспорт JSON
       </ToolbarButton>
@@ -100,7 +98,7 @@ export function Toolbar({
       >
         Скачать картинку (PNG)
       </ToolbarButton>
-      <div className="mx-1 h-5 w-px bg-line-strong" />
+      <div className="mx-1 h-5 w-px shrink-0 bg-line" />
       <ToolbarButton onClick={onResetSample}>Демо-данные</ToolbarButton>
       <ToolbarButton variant="danger" onClick={onClear}>
         Очистить
@@ -116,7 +114,7 @@ export function Toolbar({
 
       {status.message && (
         <span
-          className={`ml-1 text-[13px] ${
+          className={`ml-1 shrink-0 text-[12px] ${
             status.kind === 'error'
               ? 'text-neg'
               : status.kind === 'ok'

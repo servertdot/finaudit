@@ -1,33 +1,43 @@
+import { useState } from 'react'
 import type { ExpenseItem, ExpenseType } from '../types'
+import { AddExpenseModal } from './AddEntryModal'
 import { MoneyInput } from './MoneyInput'
 import { Panel } from './Panel'
 import { TrashIcon, TrendDownIcon } from './icons'
 
 interface ExpensesPanelProps {
   items: ExpenseItem[]
-  onAdd: () => void
+  onAdd: (item: Omit<ExpenseItem, 'id'>) => void
   onUpdate: (id: string, patch: Partial<Omit<ExpenseItem, 'id'>>) => void
   onRemove: (id: string) => void
 }
 
 export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPanelProps) {
+  const [adding, setAdding] = useState(false)
+
   return (
-    <Panel
-      title="Расходы по категориям"
-      accent="rose"
-      icon={<TrendDownIcon className="text-rose-500" />}
-      onAdd={onAdd}
-      addTitle="Добавить расход"
-    >
-      {items.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted">
-          Нет категорий. Нажмите «+», чтобы добавить.
-        </p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+    <>
+      <Panel
+        title="Расходы по категориям"
+        accent="rose"
+        icon={<TrendDownIcon size={18} className="text-neg" />}
+        onAdd={() => setAdding(true)}
+        addTitle="Добавить расход"
+      >
+        {items.length === 0 ? (
+          <p className="py-6 text-center text-sm text-muted">
+            Нет категорий. Нажмите «+», чтобы добавить.
+          </p>
+        ) : (
+          <div
+            className="table-scroll"
+            role="region"
+            aria-label="Расходы — прокручиваемая таблица"
+            tabIndex={0}
+          >
+            <table className="data-table data-table-expenses w-full border-collapse">
             <thead>
-              <tr className="text-left text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
+              <tr className="text-left text-[11px] font-semibold text-muted">
                 <th className="pb-2.5 font-medium">Категория</th>
                 <th className="pb-2.5 pl-2 font-medium">Тип</th>
                 <th className="pb-2.5 pl-2 text-right font-medium">Сумма</th>
@@ -42,7 +52,7 @@ export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPane
                       value={item.name}
                       placeholder="Категория"
                       onChange={(e) => onUpdate(item.id, { name: e.target.value })}
-                      className="w-full rounded-md border border-transparent px-1.5 py-1.5 text-sm text-ink outline-none transition-colors hover:border-line focus:border-ink"
+                      className="field w-full border-transparent px-2 py-1.5 text-sm"
                     />
                   </td>
                   <td className="py-1.5 pl-2">
@@ -51,7 +61,7 @@ export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPane
                       onChange={(e) =>
                         onUpdate(item.id, { type: e.target.value as ExpenseType })
                       }
-                      className="cursor-pointer rounded-md border border-line bg-surface px-2 py-1.5 text-sm text-ink-soft outline-none transition-colors hover:border-line-strong focus:border-ink"
+                      className="field cursor-pointer px-2 py-1.5 text-sm text-ink-soft"
                     >
                       <option value="FC">FC (Пост.)</option>
                       <option value="VC">VC (Перем.)</option>
@@ -69,7 +79,7 @@ export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPane
                       onClick={() => onRemove(item.id)}
                       title="Удалить"
                       aria-label="Удалить"
-                      className="flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-neg-soft hover:text-neg"
+                      className="icon-button text-muted hover:bg-neg-soft hover:text-neg"
                     >
                       <TrashIcon />
                     </button>
@@ -77,9 +87,11 @@ export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPane
                 </tr>
               ))}
             </tbody>
-          </table>
-        </div>
-      )}
-    </Panel>
+            </table>
+          </div>
+        )}
+      </Panel>
+      <AddExpenseModal open={adding} onClose={() => setAdding(false)} onAdd={onAdd} />
+    </>
   )
 }

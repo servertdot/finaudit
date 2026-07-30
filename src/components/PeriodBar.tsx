@@ -40,8 +40,8 @@ export function PeriodBar({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-line bg-surface px-4 py-3">
-      <span className="text-pos">
+    <div className="period-surface material-bar flex flex-wrap items-center gap-3">
+      <span className="grid h-8 w-8 place-items-center rounded-[0.65rem] bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] text-accent">
         <CalendarIcon size={18} />
       </span>
 
@@ -51,7 +51,7 @@ export function PeriodBar({
           onClick={() => hasPrev && onSelect(sorted[index - 1].month)}
           disabled={!hasPrev}
           aria-label="Предыдущий месяц"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-line-strong text-ink-soft transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+          className="icon-button text-ink-soft disabled:cursor-not-allowed disabled:opacity-30"
         >
           <ChevronLeftIcon size={16} />
         </button>
@@ -60,7 +60,8 @@ export function PeriodBar({
           <select
             value={activeMonth}
             onChange={(e) => onSelect(e.target.value)}
-            className="appearance-none rounded-full border border-line-strong bg-paper px-4 py-1.5 text-center text-[14px] font-medium text-ink outline-none transition-colors hover:border-ink focus:border-ink"
+            aria-label="Текущий месяц"
+            className="field appearance-none px-4 py-1.5 text-center text-[14px] font-semibold"
           >
             {sorted.map((m) => (
               <option key={m.month} value={m.month}>
@@ -75,7 +76,7 @@ export function PeriodBar({
           onClick={() => hasNext && onSelect(sorted[index + 1].month)}
           disabled={!hasNext}
           aria-label="Следующий месяц"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-line-strong text-ink-soft transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-30"
+          className="icon-button text-ink-soft disabled:cursor-not-allowed disabled:opacity-30"
         >
           <ChevronRightIcon size={16} />
         </button>
@@ -85,14 +86,15 @@ export function PeriodBar({
         value={note}
         onChange={(e) => onNoteChange(e.target.value)}
         placeholder="Заметка к месяцу (премия, отпуск…)"
-        className="min-w-0 flex-1 border-b border-transparent bg-transparent pb-1 text-[13px] text-ink-soft outline-none transition-colors placeholder:text-muted hover:border-line-strong focus:border-ink"
+        aria-label="Заметка к месяцу"
+        className="min-w-[12rem] flex-1 rounded-lg border border-transparent bg-transparent px-2.5 py-1.5 text-[13px] text-ink-soft transition-colors placeholder:text-muted hover:bg-[color-mix(in_srgb,var(--color-ink)_4%,transparent)] focus:border-line focus:bg-surface"
       />
 
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={onAddMonth}
-          className="flex items-center gap-1.5 rounded-full border border-accent bg-accent px-3 py-1.5 text-[13px] font-medium text-paper transition-opacity hover:opacity-90"
+          className="flex min-h-8 items-center gap-1.5 rounded-[0.65rem] bg-accent px-3 py-1.5 text-[13px] font-semibold text-white transition-[filter,transform] hover:brightness-95"
         >
           <PlusIcon size={14} />
           Новый месяц
@@ -103,7 +105,7 @@ export function PeriodBar({
           disabled={!canDelete}
           aria-label="Удалить месяц"
           title="Удалить месяц"
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-line-strong text-neg transition-colors hover:border-neg hover:bg-neg-soft disabled:cursor-not-allowed disabled:opacity-30"
+          className="icon-button text-neg hover:bg-neg-soft disabled:cursor-not-allowed disabled:opacity-30"
         >
           <TrashIcon size={16} />
         </button>

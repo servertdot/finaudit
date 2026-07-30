@@ -36,32 +36,32 @@ interface HistoryTokens {
 
 const TOKENS: Record<Theme, HistoryTokens> = {
   light: {
-    income: '#1f7a55',
-    expense: '#b8412f',
-    assets: '#4a6b8a',
-    fc: '#4a6b8a',
-    vc: '#c2603f',
-    rate: '#8d6a9f',
-    grid: '#e6e4dd',
-    tick: '#8f8b7e',
-    tipBg: '#fbfbf9',
-    tipBorder: '#d8d5cc',
-    tipText: '#16150f',
-    legend: '#57544a',
+    income: '#248a3d',
+    expense: '#d70015',
+    assets: '#007aff',
+    fc: '#007aff',
+    vc: '#ff9f0a',
+    rate: '#af52de',
+    grid: '#e8e8ed',
+    tick: '#86868b',
+    tipBg: '#ffffff',
+    tipBorder: '#d2d2d7',
+    tipText: '#1d1d1f',
+    legend: '#515154',
   },
   dark: {
-    income: '#bdee63',
-    expense: '#f08a6f',
-    assets: '#6db1d8',
-    fc: '#6db1d8',
-    vc: '#f0915f',
-    rate: '#c08fd6',
-    grid: '#2a3a1d',
-    tick: '#899679',
-    tipBg: '#18230f',
-    tipBorder: '#3b4f29',
-    tipText: '#f1f4ea',
-    legend: '#bcc8a8',
+    income: '#30d158',
+    expense: '#ff453a',
+    assets: '#0a84ff',
+    fc: '#0a84ff',
+    vc: '#ff9f0a',
+    rate: '#bf5af2',
+    grid: '#323234',
+    tick: '#8e8e93',
+    tipBg: '#1c1c1e',
+    tipBorder: '#48484a',
+    tipText: '#f5f5f7',
+    legend: '#d1d1d6',
   },
 }
 
@@ -71,7 +71,7 @@ const compactFmt = new Intl.NumberFormat('ru-RU', {
 })
 
 const chartTitleClass =
-  'mb-3 text-center text-[11px] font-medium uppercase tracking-[0.18em] text-muted'
+  'mb-3 text-center text-[13px] font-semibold tracking-[-0.01em] text-ink-soft'
 
 const toneClass: Record<InsightTone, string> = {
   good: 'text-pos',
@@ -89,7 +89,7 @@ function DeltaBadge({ stat }: { stat: DeltaStat }) {
   const arrow = flat ? '→' : up ? '▲' : '▼'
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-[11px] uppercase tracking-[0.14em] text-muted">{stat.label}</span>
+      <span className="text-[11px] font-medium text-muted">{stat.label}</span>
       <span className="font-display text-xl leading-none tabular-nums text-ink">
         {formatMoney(stat.value)}
       </span>
@@ -106,12 +106,12 @@ export function HistoryPanel({ history, theme }: { history: HistoryReport; theme
   const t = TOKENS[theme]
 
   const tooltipStyle = {
-    borderRadius: 8,
+    borderRadius: 12,
     border: `1px solid ${t.tipBorder}`,
     background: t.tipBg,
     fontSize: 12,
     color: t.tipText,
-    boxShadow: 'none',
+    boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
   }
 
   const moneyTip = (value: number | string | ReadonlyArray<number | string> | undefined) =>
@@ -298,7 +298,7 @@ export function HistoryPanel({ history, theme }: { history: HistoryReport; theme
           {/* Инсайты */}
           {history.insights.length > 0 && (
             <div className="mt-6 border-t border-line pt-5">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink">
+              <h3 className="mb-3 text-[13px] font-semibold text-ink">
                 Наблюдения
               </h3>
               <ul className="flex flex-col gap-2">

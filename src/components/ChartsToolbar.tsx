@@ -47,15 +47,15 @@ function TypeSegmented({
   onChange: (type: ChartType) => void
 }) {
   return (
-    <div className="flex overflow-hidden rounded-md border border-line">
+    <div className="flex rounded-lg bg-paper p-0.5">
       {CHART_TYPES.map((type) => (
         <button
           key={type}
           type="button"
           onClick={() => onChange(type)}
-          className={`px-2 py-1 text-[11px] transition-colors ${
+          className={`rounded-md px-2 py-1 text-[11px] transition-[color,background-color,box-shadow] ${
             value === type
-              ? 'bg-ink text-surface'
+              ? 'bg-surface text-ink shadow-sm'
               : 'text-ink-soft hover:text-ink'
           }`}
         >
@@ -85,7 +85,7 @@ function Switch({
     >
       <span
         className={`relative inline-flex h-4 w-7 items-center rounded-full transition-colors ${
-          checked ? 'bg-pos' : 'bg-line-strong'
+          checked ? 'bg-accent' : 'bg-line-strong'
         }`}
       >
         <span
@@ -109,14 +109,14 @@ function ColumnsControl({
   return (
     <div className="flex items-center gap-1.5 text-[12px] text-ink-soft">
       <span>В строке</span>
-      <div className="flex overflow-hidden rounded-md border border-line-strong">
+      <div className="flex rounded-lg bg-paper p-0.5">
         {CHART_COLUMNS.map((col) => (
           <button
             key={col}
             type="button"
             onClick={() => onChange(col)}
-            className={`px-2 py-1 text-[11px] transition-colors ${
-              value === col ? 'bg-ink text-surface' : 'text-ink-soft hover:text-ink'
+            className={`rounded-md px-2 py-1 text-[11px] transition-[color,background-color,box-shadow] ${
+              value === col ? 'bg-surface text-ink shadow-sm' : 'text-ink-soft hover:text-ink'
             }`}
           >
             {col}
@@ -154,7 +154,7 @@ export function ChartsToolbar({
   const visibleCount = charts.filter((c) => c.visible).length
 
   return (
-    <div className="mb-5 flex flex-wrap items-center justify-end gap-4">
+    <div className="mb-5 flex flex-wrap items-center justify-end gap-3">
       <ColumnsControl value={columns} onChange={onSetColumns} />
 
       <Switch
@@ -168,7 +168,7 @@ export function ChartsToolbar({
           type="button"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
-          className="flex items-center gap-2 rounded-md border border-line-strong px-3 py-1.5 text-[12px] text-ink-soft transition-colors hover:border-ink hover:text-ink"
+          className="field flex items-center gap-2 px-3 py-1.5 text-[12px] text-ink-soft"
         >
           Графики
           <span className="rounded-full bg-line px-1.5 text-[11px] text-ink">
@@ -178,9 +178,9 @@ export function ChartsToolbar({
         </button>
 
         {open && (
-          <div className="absolute right-0 z-20 mt-2 w-[19rem] rounded-lg border border-line bg-surface p-2 shadow-lg">
+          <div className="popover absolute right-0 z-20 mt-2 w-[19rem] p-2">
             <div className="flex items-center justify-between px-2 py-1.5">
-              <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
+              <span className="text-[12px] font-semibold text-muted">
                 Графики и вид
               </span>
               <button
@@ -196,7 +196,7 @@ export function ChartsToolbar({
               {charts.map((chart) => (
                 <li
                   key={chart.key}
-                  className="flex flex-col gap-2 rounded-md px-2 py-2 hover:bg-paper"
+                  className="flex flex-col gap-2 rounded-lg px-2 py-2 hover:bg-paper"
                 >
                   <label className="flex cursor-pointer items-center gap-2.5 text-[13px] text-ink">
                     <input

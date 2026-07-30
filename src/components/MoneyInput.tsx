@@ -37,7 +37,7 @@ export function MoneyInput({
         setDraft(next)
         onChange(next === '' ? 0 : Number(next))
       }}
-      className={`w-full rounded-md border border-line bg-paper/40 px-2.5 py-1.5 text-sm tabular-nums text-ink outline-none transition-colors hover:border-line-strong focus:border-ink focus:bg-surface ${
+      className={`field w-full px-2.5 py-1.5 text-sm tabular-nums ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     />

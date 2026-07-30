@@ -23,13 +23,13 @@ import { STORAGE_KEY, financeStorage, normalizePersisted } from '../lib/storage'
 
 interface FinanceActions {
   setUser: (user: string) => void
-  addExpense: () => void
+  addExpense: (item: Omit<ExpenseItem, 'id'>) => void
   updateExpense: (id: string, patch: Partial<Omit<ExpenseItem, 'id'>>) => void
   removeExpense: (id: string) => void
-  addIncome: () => void
+  addIncome: (item: Omit<IncomeItem, 'id'>) => void
   updateIncome: (id: string, patch: Partial<Omit<IncomeItem, 'id'>>) => void
   removeIncome: (id: string) => void
-  addAsset: () => void
+  addAsset: (item: Omit<AssetItem, 'id'>) => void
   updateAsset: (id: string, patch: Partial<Omit<AssetItem, 'id'>>) => void
   removeAsset: (id: string) => void
   // --- Периоды ---
@@ -77,11 +77,11 @@ export const useFinanceStore = create<FinanceStore>()(
       setUser: (user) => set({ user }),
 
       // --- Расходы ---
-      addExpense: () =>
+      addExpense: (item) =>
         set((s) =>
           patchActive(s, (snap) => ({
             ...snap,
-            expenses: [...snap.expenses, { id: uid(), name: '', type: 'FC', amount: 0 }],
+            expenses: [...snap.expenses, { id: uid(), ...item }],
           })),
         ),
       updateExpense: (id, patch) =>
@@ -100,11 +100,11 @@ export const useFinanceStore = create<FinanceStore>()(
         ),
 
       // --- Доходы ---
-      addIncome: () =>
+      addIncome: (item) =>
         set((s) =>
           patchActive(s, (snap) => ({
             ...snap,
-            incomes: [...snap.incomes, { id: uid(), name: '', amount: 0 }],
+            incomes: [...snap.incomes, { id: uid(), ...item }],
           })),
         ),
       updateIncome: (id, patch) =>
@@ -123,14 +123,11 @@ export const useFinanceStore = create<FinanceStore>()(
         ),
 
       // --- Активы ---
-      addAsset: () =>
+      addAsset: (item) =>
         set((s) =>
           patchActive(s, (snap) => ({
             ...snap,
-            assets: [
-              ...snap.assets,
-              { id: uid(), name: '', type: 'cash', liquid: true, amount: 0 },
-            ],
+            assets: [...snap.assets, { id: uid(), ...item }],
           })),
         ),
       updateAsset: (id, patch) =>

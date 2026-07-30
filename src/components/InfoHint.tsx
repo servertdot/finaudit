@@ -48,11 +48,11 @@ export function InfoHint({ title, children, align = 'right' }: InfoHintProps) {
         <div
           id={popoverId}
           role="tooltip"
-          className={`absolute top-7 z-20 w-64 rounded-lg border border-line-strong bg-surface p-3.5 text-left shadow-lg ${
+          className={`popover absolute top-7 z-20 w-64 p-3.5 text-left ${
             align === 'right' ? 'right-0' : 'left-0'
           }`}
         >
-          <p className="mb-1.5 text-[12px] font-semibold uppercase tracking-[0.12em] text-ink">
+          <p className="mb-1.5 text-[13px] font-semibold text-ink">
             {title}
           </p>
           <div className="flex flex-col gap-2 text-[12px] leading-relaxed text-ink-soft">

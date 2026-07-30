@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { AssetItem, AssetType } from '../types'
 import {
   ASSET_TYPES,
@@ -11,35 +12,44 @@ import { formatMoney } from '../lib/format'
 import { MoneyInput } from './MoneyInput'
 import { Panel } from './Panel'
 import { TrashIcon, WalletIcon } from './icons'
+import { AddAssetModal } from './AddEntryModal'
 
 interface AssetsPanelProps {
   items: AssetItem[]
-  onAdd: () => void
+  onAdd: (item: Omit<AssetItem, 'id'>) => void
   onUpdate: (id: string, patch: Partial<Omit<AssetItem, 'id'>>) => void
   onRemove: (id: string) => void
 }
 
 export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelProps) {
+  const [adding, setAdding] = useState(false)
   const totalMonthly = items.reduce((acc, item) => acc + monthlyIncome(item), 0)
   const totalAnnual = items.reduce((acc, item) => acc + annualIncome(item), 0)
 
   return (
-    <Panel
-      title="Активы"
-      accent="slate"
-      icon={<WalletIcon size={18} className="text-ink-soft" />}
-      onAdd={onAdd}
-      addTitle="Добавить актив"
-    >
-      {items.length === 0 ? (
-        <p className="py-6 text-center text-sm text-muted">
-          Пусто. Нажмите «+», чтобы добавить.
-        </p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
+    <>
+      <Panel
+        title="Активы"
+        accent="slate"
+        icon={<WalletIcon size={18} className="text-ink-soft" />}
+        onAdd={() => setAdding(true)}
+        addTitle="Добавить актив"
+      >
+        {items.length === 0 ? (
+          <p className="py-6 text-center text-sm text-muted">
+            Пусто. Нажмите «+», чтобы добавить.
+          </p>
+        ) : (
+          <>
+            <div
+              className="table-scroll"
+              role="region"
+              aria-label="Активы — прокручиваемая таблица"
+              tabIndex={0}
+            >
+              <table className="data-table data-table-assets w-full border-collapse">
             <thead>
-              <tr className="text-left text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
+              <tr className="text-left text-[11px] font-semibold text-muted">
                 <th className="pb-2.5 font-medium">Актив</th>
                 <th className="pb-2.5 pl-2 font-medium">Вид</th>
                 <th className="pb-2.5 pl-2 text-right font-medium">% год.</th>
@@ -64,7 +74,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                         value={item.name}
                         placeholder="Название"
                         onChange={(e) => onUpdate(item.id, { name: e.target.value })}
-                        className="w-full rounded-md border border-transparent px-1.5 py-1.5 text-sm text-ink outline-none transition-colors hover:border-line focus:border-ink"
+                        className="field w-full border-transparent px-2 py-1.5 text-sm"
                       />
                     </td>
                     <td className="py-1.5 pl-2">
@@ -79,7 +89,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                             rate: hasYield(type) ? item.rate : undefined,
                           })
                         }}
-                        className="cursor-pointer rounded-md border border-line bg-surface px-2 py-1.5 text-sm text-ink-soft outline-none transition-colors hover:border-line-strong focus:border-ink"
+                        className="field cursor-pointer px-2 py-1.5 text-sm text-ink-soft"
                       >
                         {ASSET_TYPES.map((type) => (
                           <option key={type} value={type}>
@@ -104,7 +114,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                               })
                             }
                             aria-label="Ставка % годовых"
-                            className="w-full rounded-md border border-line bg-paper/40 px-2.5 py-1.5 text-right text-sm tabular-nums text-ink outline-none transition-colors hover:border-line-strong focus:border-ink focus:bg-surface"
+                            className="field w-full px-2.5 py-1.5 text-right text-sm tabular-nums"
                           />
                           {perMonth > 0 && (
                             <span className="mt-1 block text-[11px] tabular-nums text-pos">
@@ -138,7 +148,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                         onClick={() => onRemove(item.id)}
                         title="Удалить"
                         aria-label="Удалить"
-                        className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-md text-muted transition-colors hover:bg-neg-soft hover:text-neg"
+                        className="icon-button mt-0.5 text-muted hover:bg-neg-soft hover:text-neg"
                       >
                         <TrashIcon />
                       </button>
@@ -147,24 +157,27 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                 )
               })}
             </tbody>
-          </table>
-
-          {totalAnnual > 0 && (
-            <div className="mt-3 flex items-center justify-between rounded-md bg-pos-soft px-3 py-2 text-sm">
-              <span className="text-ink-soft">Ожидаемый доход с %</span>
-              <span className="tabular-nums font-medium text-pos">
-                +{formatMoney(totalMonthly)}/мес · +{formatMoney(totalAnnual)}/год
-              </span>
+              </table>
             </div>
-          )}
 
-          <p className="mt-3 text-[12px] leading-snug text-muted">
-            «В&nbsp;подушку» — ликвидные активы, доступные сразу. Для вклада и инвестиций укажите
-            ставку «% годовых» — при создании нового месяца сумма автоматически вырастет на доход
-            за&nbsp;месяц.
-          </p>
-        </div>
-      )}
-    </Panel>
+            {totalAnnual > 0 && (
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-pos-soft px-3 py-2.5 text-sm">
+                <span className="text-ink-soft">Ожидаемый доход с %</span>
+                <span className="tabular-nums font-medium text-pos">
+                  +{formatMoney(totalMonthly)}/мес · +{formatMoney(totalAnnual)}/год
+                </span>
+              </div>
+            )}
+
+            <p className="mt-3 text-[12px] leading-snug text-muted">
+              «В&nbsp;подушку» — ликвидные активы, доступные сразу. Для вклада и
+              инвестиций укажите ставку «% годовых» — при создании нового месяца сумма
+              автоматически вырастет на доход за&nbsp;месяц.
+            </p>
+          </>
+        )}
+      </Panel>
+      <AddAssetModal open={adding} onClose={() => setAdding(false)} onAdd={onAdd} />
+    </>
   )
 }
