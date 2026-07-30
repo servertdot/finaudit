@@ -48,115 +48,126 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
               tabIndex={0}
             >
               <table className="data-table data-table-assets w-full border-collapse">
-            <thead>
-              <tr className="text-left text-[11px] font-semibold text-muted">
-                <th className="pb-2.5 font-medium">Актив</th>
-                <th className="pb-2.5 pl-2 font-medium">Вид</th>
-                <th className="pb-2.5 pl-2 text-right font-medium">% год.</th>
-                <th
-                  className="pb-2.5 pl-2 text-center font-medium"
-                  title="Учитывать в финансовой подушке"
-                >
-                  В&nbsp;подушку
-                </th>
-                <th className="pb-2.5 pl-2 text-right font-medium">Сумма</th>
-                <th className="pb-2.5" />
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => {
-                const yielding = hasYield(item.type)
-                const perMonth = monthlyIncome(item)
-                return (
-                  <tr key={item.id} className="border-t border-line align-top">
-                    <td className="py-1.5 pr-2">
-                      <input
-                        value={item.name}
-                        placeholder="Название"
-                        onChange={(e) => onUpdate(item.id, { name: e.target.value })}
-                        className="field w-full border-transparent px-2 py-1.5 text-sm"
-                      />
-                    </td>
-                    <td className="py-1.5 pl-2">
-                      <select
-                        value={item.type}
-                        onChange={(e) => {
-                          const type = e.target.value as AssetType
-                          onUpdate(item.id, {
-                            type,
-                            liquid: defaultLiquidFor(type),
-                            // Ставка имеет смысл только для доходных активов.
-                            rate: hasYield(type) ? item.rate : undefined,
-                          })
-                        }}
-                        className="field cursor-pointer px-2 py-1.5 text-sm text-ink-soft"
-                      >
-                        {ASSET_TYPES.map((type) => (
-                          <option key={type} value={type}>
-                            {ASSET_TYPE_LABELS[type]}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-                    <td className="w-24 py-1.5 pl-2 text-right">
-                      {yielding ? (
-                        <>
-                          <input
-                            type="number"
-                            inputMode="decimal"
-                            min={0}
-                            step={0.1}
-                            value={item.rate ?? ''}
-                            placeholder="0"
-                            onChange={(e) =>
-                              onUpdate(item.id, {
-                                rate: e.target.value === '' ? undefined : Number(e.target.value),
-                              })
-                            }
-                            aria-label="Ставка % годовых"
-                            className="field w-full px-2.5 py-1.5 text-right text-sm tabular-nums"
-                          />
-                          {perMonth > 0 && (
-                            <span className="mt-1 block text-[11px] tabular-nums text-pos">
-                              +{formatMoney(perMonth)}/мес
-                            </span>
-                          )}
-                        </>
-                      ) : (
-                        <span className="block py-1.5 pr-2.5 text-sm text-muted">—</span>
-                      )}
-                    </td>
-                    <td className="py-1.5 pl-2 text-center">
-                      <input
-                        type="checkbox"
-                        checked={item.liquid}
-                        onChange={(e) => onUpdate(item.id, { liquid: e.target.checked })}
-                        title="Учитывать в финансовой подушке"
-                        aria-label="Учитывать в финансовой подушке"
-                        className="mt-2 h-4 w-4 cursor-pointer accent-ink"
-                      />
-                    </td>
-                    <td className="w-24 py-1.5 pl-2">
-                      <MoneyInput
-                        value={item.amount}
-                        onChange={(amount) => onUpdate(item.id, { amount })}
-                      />
-                    </td>
-                    <td className="py-1.5 pl-1">
-                      <button
-                        type="button"
-                        onClick={() => onRemove(item.id)}
-                        title="Удалить"
-                        aria-label="Удалить"
-                        className="icon-button mt-0.5 text-muted hover:bg-neg-soft hover:text-neg"
-                      >
-                        <TrashIcon />
-                      </button>
-                    </td>
+                <colgroup>
+                  <col className="col-asset-name" />
+                  <col className="col-asset-type" />
+                  <col className="col-asset-rate" />
+                  <col className="col-asset-liquid" />
+                  <col className="col-asset-amount" />
+                  <col className="col-table-action" />
+                </colgroup>
+                <thead>
+                  <tr className="text-left text-[11px] font-semibold text-muted">
+                    <th className="pb-2.5 font-medium">Актив</th>
+                    <th className="pb-2.5 pl-2 font-medium">Вид</th>
+                    <th className="pb-2.5 pl-2 text-right font-medium">% год.</th>
+                    <th
+                      className="pb-2.5 pl-2 text-center font-medium"
+                      title="Учитывать в финансовой подушке"
+                    >
+                      В&nbsp;подушку
+                    </th>
+                    <th className="pb-2.5 pl-2 text-right font-medium">Сумма</th>
+                    <th className="pb-2.5" />
                   </tr>
-                )
-              })}
-            </tbody>
+                </thead>
+                <tbody>
+                  {items.map((item) => {
+                    const yielding = hasYield(item.type)
+                    const perMonth = monthlyIncome(item)
+                    return (
+                      <tr key={item.id} className="border-t border-line align-top">
+                        <td className="py-1.5 pr-2">
+                          <input
+                            value={item.name}
+                            placeholder="Название"
+                            onChange={(e) => onUpdate(item.id, { name: e.target.value })}
+                            className="field min-w-0 w-full border-transparent px-2 py-1.5 text-sm"
+                          />
+                        </td>
+                        <td className="py-1.5 pl-2">
+                          <select
+                            value={item.type}
+                            onChange={(e) => {
+                              const type = e.target.value as AssetType
+                              onUpdate(item.id, {
+                                type,
+                                liquid: defaultLiquidFor(type),
+                                // Ставка имеет смысл только для доходных активов.
+                                rate: hasYield(type) ? item.rate : undefined,
+                              })
+                            }}
+                            className="field min-w-0 w-full cursor-pointer px-2 py-1.5 text-sm text-ink-soft"
+                          >
+                            {ASSET_TYPES.map((type) => (
+                              <option key={type} value={type}>
+                                {ASSET_TYPE_LABELS[type]}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="py-1.5 pl-2 text-right">
+                          {yielding ? (
+                            <>
+                              <input
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                step={0.1}
+                                value={item.rate ?? ''}
+                                placeholder="0"
+                                onChange={(e) =>
+                                  onUpdate(item.id, {
+                                    rate:
+                                      e.target.value === ''
+                                        ? undefined
+                                        : Number(e.target.value),
+                                  })
+                                }
+                                aria-label="Ставка % годовых"
+                                className="field min-w-0 w-full px-2.5 py-1.5 text-right text-sm tabular-nums"
+                              />
+                              {perMonth > 0 && (
+                                <span className="mt-1 block text-[11px] tabular-nums text-pos">
+                                  +{formatMoney(perMonth)}/мес
+                                </span>
+                              )}
+                            </>
+                          ) : (
+                            <span className="block py-1.5 pr-2.5 text-sm text-muted">—</span>
+                          )}
+                        </td>
+                        <td className="py-1.5 pl-2 text-center">
+                          <input
+                            type="checkbox"
+                            checked={item.liquid}
+                            onChange={(e) => onUpdate(item.id, { liquid: e.target.checked })}
+                            title="Учитывать в финансовой подушке"
+                            aria-label="Учитывать в финансовой подушке"
+                            className="mt-2 h-4 w-4 cursor-pointer accent-ink"
+                          />
+                        </td>
+                        <td className="py-1.5 pl-2">
+                          <MoneyInput
+                            value={item.amount}
+                            onChange={(amount) => onUpdate(item.id, { amount })}
+                          />
+                        </td>
+                        <td className="py-1.5 pl-1">
+                          <button
+                            type="button"
+                            onClick={() => onRemove(item.id)}
+                            title="Удалить"
+                            aria-label="Удалить"
+                            className="icon-button mt-0.5 text-muted hover:bg-neg-soft hover:text-neg"
+                          >
+                            <TrashIcon />
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
               </table>
             </div>
 

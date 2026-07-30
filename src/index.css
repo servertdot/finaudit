@@ -355,12 +355,68 @@ button:focus-visible {
   table-layout: fixed;
 }
 
+.data-table td {
+  min-width: 0;
+}
+
+.data-table td > .field {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.data-table select.field {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .data-table-assets {
+  width: max(100%, 43rem);
   min-width: 43rem;
 }
 
+.data-table-assets .col-asset-name {
+  width: 10rem;
+}
+
+.data-table-assets .col-asset-type {
+  width: 8.5rem;
+}
+
+.data-table-assets .col-asset-rate {
+  width: 7rem;
+}
+
+.data-table-assets .col-asset-liquid {
+  width: 6rem;
+}
+
+.data-table-assets .col-asset-amount {
+  width: 8rem;
+}
+
 .data-table-expenses {
+  width: max(100%, 30rem);
   min-width: 30rem;
+}
+
+.data-table-expenses .col-expense-name {
+  width: 10rem;
+}
+
+.data-table-expenses .col-expense-type {
+  width: 9rem;
+}
+
+.data-table-expenses .col-expense-amount {
+  width: 8rem;
+}
+
+.data-table .col-table-action {
+  width: 3rem;
 }
 
 .modal-layer {

@@ -37,7 +37,7 @@ export function MoneyInput({
         setDraft(next)
         onChange(next === '' ? 0 : Number(next))
       }}
-      className={`field w-full px-2.5 py-1.5 text-sm tabular-nums ${
+      className={`field min-w-0 w-full px-2.5 py-1.5 text-sm tabular-nums ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     />
