@@ -9,6 +9,7 @@ import type {
 } from '../types'
 import { defaultLiquidFor, isAssetType } from './assets'
 import { uid } from './id'
+import { parseMoneyInput } from './format'
 import { compareMonthAsc, currentMonthKey, isMonthKey } from './period'
 
 export const STORAGE_KEY = 'finaudit:v1'
@@ -16,8 +17,9 @@ export const STORAGE_KEY = 'finaudit:v1'
 const DEFAULT_USER = 'Пользователь'
 
 function toNumber(value: unknown): number {
-  const n = typeof value === 'string' ? Number(value.replace(',', '.')) : Number(value)
-  return Number.isFinite(n) ? n : 0
+  if (typeof value === 'string') return parseMoneyInput(value)
+  const number = Number(value)
+  return Number.isFinite(number) ? number : 0
 }
 
 function normalizeExpenses(raw: unknown): ExpenseItem[] {
@@ -55,6 +57,7 @@ function normalizeAssets(raw: unknown): AssetItem[] {
       id: typeof obj.id === 'string' ? obj.id : uid(),
       name: typeof obj.name === 'string' ? obj.name : '',
       type,
+      ...(typeof obj.note === 'string' && obj.note ? { note: obj.note } : {}),
       liquid: typeof obj.liquid === 'boolean' ? obj.liquid : defaultLiquidFor(type),
       amount: toNumber(obj.amount),
       ...(rate && rate > 0 ? { rate } : {}),

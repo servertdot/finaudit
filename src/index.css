@@ -413,8 +413,8 @@ button:focus-visible {
 }
 
 .data-table-assets {
-  width: max(100%, 43rem);
-  min-width: 43rem;
+  width: max(100%, 60rem);
+  min-width: 60rem;
 }
 
 .data-table-assets .col-asset-name {
@@ -436,6 +436,10 @@ button:focus-visible {
 .data-table-assets .col-asset-amount {
   width: 8rem;
 }
+.data-table-assets .col-asset-note {
+  width: 9rem;
+}
+
 
 .data-table-expenses {
   width: max(100%, 30rem);

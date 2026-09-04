@@ -20,6 +20,8 @@ export interface AssetItem {
   id: string
   name: string
   type: AssetType
+  /** Короткое пояснение к активу. */
+  note?: string
   /** Доступен ли актив сразу (учитывается в финансовой подушке). */
   liquid: boolean
   amount: number

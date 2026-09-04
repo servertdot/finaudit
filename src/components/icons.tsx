@@ -148,3 +148,10 @@ export function CalculatorIcon({ className, size = 24 }: IconProps) {
     </svg>
   )
 }
+export function ExpandIcon({ className, size = 15 }: IconProps) {
+  return (
+    <svg {...base(size)} className={className}>
+      <path d="M8 3H3v5M3 3l6 6M16 21h5v-5M21 21l-6-6" />
+    </svg>
+  )
+}

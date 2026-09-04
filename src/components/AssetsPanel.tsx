@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { AssetItem, AssetType } from '../types'
 import {
   ASSET_TYPES,
@@ -11,12 +11,117 @@ import {
 import { formatMoney } from '../lib/format'
 import { MoneyInput } from './MoneyInput'
 import { Panel } from './Panel'
-import { TrashIcon, WalletIcon } from './icons'
+import { ExpandIcon, TrashIcon, WalletIcon } from './icons'
 import { AddAssetModal } from './AddEntryModal'
 import { Table } from './ui/table'
 import { Checkbox } from './ui/checkbox'
 import { Input } from './ui/input'
 import { Select } from './ui/select'
+
+function AssetNoteEditor({
+  note,
+  onChange,
+  showText = true,
+}: {
+  note?: string
+  onChange: (note: string) => void
+  showText?: boolean
+}) {
+  const [open, setOpen] = useState(false)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const [position, setPosition] = useState({ top: 0, left: 0 })
+
+  useEffect(() => {
+    if (!open) return
+    const updatePosition = () => {
+      const rect = buttonRef.current?.getBoundingClientRect()
+      if (!rect) return
+      setPosition({
+        top: rect.bottom + 8,
+        left: Math.min(rect.left, window.innerWidth - 336),
+      })
+    }
+    const closeOnOutside = (event: MouseEvent) => {
+      const target = event.target
+      if (
+        !(target instanceof Node) ||
+        (!buttonRef.current?.parentElement?.contains(target) &&
+          !(target instanceof Element && target.closest('[data-asset-note-popover]')))
+      ) {
+        setOpen(false)
+      }
+    }
+    updatePosition()
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition, true)
+    document.addEventListener('mousedown', closeOnOutside)
+    return () => {
+      window.removeEventListener('resize', updatePosition)
+      window.removeEventListener('scroll', updatePosition, true)
+      document.removeEventListener('mousedown', closeOnOutside)
+    }
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [open])
+
+  return (
+    <div className="relative flex min-w-0 items-center gap-2">
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-label="Открыть примечание"
+        aria-expanded={open}
+        title="Открыть примечание"
+        className="icon-button shrink-0 text-muted hover:text-ink"
+      >
+        <ExpandIcon />
+      </button>
+      {showText && (
+        <span
+          className="min-w-0 flex-1 truncate text-sm text-ink-soft"
+          title={note}
+        >
+          {note || ''}
+        </span>
+      )}
+      
+      {open && (
+        <div
+          role="dialog"
+          aria-label="Редактирование примечания"
+          data-asset-note-popover
+          className="popover asset-note-popover fixed z-50 w-[20rem] max-w-[calc(100vw-1.5rem)] p-3"
+          style={{ top: position.top, left: Math.max(12, position.left) }}
+        >
+          <textarea
+            autoFocus
+            value={note ?? ''}
+            onChange={(event) => onChange(event.target.value)}
+            placeholder="Напишите примечание к активу"
+            aria-label="Текст примечания"
+            rows={4}
+            className="field w-full resize-y px-3 py-2 text-sm leading-relaxed text-ink"
+          />
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="mt-2 text-xs font-medium text-accent hover:underline"
+          >
+            Готово
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 interface AssetsPanelProps {
   items: AssetItem[]
@@ -52,14 +157,15 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
               tabIndex={0}
             >
               <Table className="data-table data-table-assets w-full border-collapse">
-                <colgroup>
-                  <col className="col-asset-name" />
-                  <col className="col-asset-type" />
-                  <col className="col-asset-rate" />
-                  <col className="col-asset-liquid" />
-                  <col className="col-asset-amount" />
-                  <col className="col-table-action" />
-                </colgroup>
+<colgroup>
+  <col className="col-asset-name" />
+  <col className="col-asset-type" />
+  <col className="col-asset-rate" />
+  <col className="col-asset-liquid" />
+  <col className="col-asset-amount" />
+  <col className="col-asset-note" />
+  <col className="col-table-action" />
+</colgroup>
                 <thead>
                   <tr className="text-left text-[11px] font-semibold text-muted">
                     <th className="pb-2.5 font-medium">Актив</th>
@@ -72,6 +178,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                       В&nbsp;подушку
                     </th>
                     <th className="pb-2.5 pl-2 text-right font-medium">Сумма</th>
+                    <th className="pb-2.5 pl-2 font-medium">Примечание</th>
                     <th className="pb-2.5" />
                   </tr>
                 </thead>
@@ -154,6 +261,12 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                           <MoneyInput
                             value={item.amount}
                             onChange={(amount) => onUpdate(item.id, { amount })}
+                          />
+                        </td>
+                        <td className="py-1.5 pl-2">
+                          <AssetNoteEditor
+                            note={item.note}
+                            onChange={(note) => onUpdate(item.id, { note })}
                           />
                         </td>
                         <td className="py-1.5 pl-1">

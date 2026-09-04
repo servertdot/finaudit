@@ -280,13 +280,14 @@ export function AddAssetModal({ open, onClose, onAdd }: AddAssetModalProps) {
   const [amount, setAmount] = useState(0)
   const [rate, setRate] = useState('')
   const [liquid, setLiquid] = useState(true)
+  const [note, setNote] = useState('')
 
   const handleClose = () => {
     setName('')
     setType('cash')
-    setAmount(0)
     setRate('')
     setLiquid(true)
+    setNote('')
     onClose()
   }
 
@@ -306,6 +307,7 @@ export function AddAssetModal({ open, onClose, onAdd }: AddAssetModalProps) {
       type,
       amount,
       liquid,
+      note: note.trim() || undefined,
       rate: hasYield(type) && rate !== '' ? Number(rate) : undefined,
     })
     handleClose()
@@ -364,6 +366,16 @@ export function AddAssetModal({ open, onClose, onAdd }: AddAssetModalProps) {
           />
         </FormField>
       )}
+
+      <FormField label="Примечание">
+        <textarea
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
+          placeholder="Например, цель или срок"
+          rows={3}
+          className="field w-full resize-y px-3 py-2 text-[15px] leading-relaxed text-ink"
+        />
+      </FormField>
 
       <label className="flex cursor-pointer items-center justify-between gap-4 rounded-xl bg-paper px-3.5 py-3">
         <span>
