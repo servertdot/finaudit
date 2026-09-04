@@ -15,12 +15,20 @@ function dateStamp(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
+function jsonPayload(data: FinanceData): string {
+  return JSON.stringify(data, null, 2)
+}
+
 export function exportJson(data: FinanceData): void {
-  const payload = JSON.stringify(data, null, 2)
+  const payload = jsonPayload(data)
   const blob = new Blob([payload], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   triggerDownload(url, `finaudit-${dateStamp()}.json`)
   URL.revokeObjectURL(url)
+}
+
+export async function copyJson(data: FinanceData): Promise<void> {
+  await navigator.clipboard.writeText(jsonPayload(data))
 }
 
 function currentPaperColor(): string {
@@ -39,20 +47,30 @@ export async function exportPng(node: HTMLElement): Promise<void> {
   triggerDownload(dataUrl, `finaudit-${dateStamp()}.png`)
 }
 
+export function parseImportJson(value: string): FinanceData {
+  try {
+    const parsed: unknown = JSON.parse(value)
+    const data = normalizePersisted(parsed)
+    if (!data) {
+      throw new Error('JSON не содержит корректных данных')
+    }
+    return data
+  } catch (error) {
+    if (error instanceof Error && error.message === 'JSON не содержит корректных данных') {
+      throw error
+    }
+    throw new Error('Некорректный JSON', { cause: error })
+  }
+}
+
 export function readImportFile(file: File): Promise<FinanceData> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
       try {
-        const parsed = JSON.parse(String(reader.result))
-        const data = normalizePersisted(parsed)
-        if (!data) {
-          reject(new Error('Файл не содержит корректных данных'))
-          return
-        }
-        resolve(data)
-      } catch {
-        reject(new Error('Не удалось прочитать JSON-файл'))
+        resolve(parseImportJson(String(reader.result)))
+      } catch (error) {
+        reject(error)
       }
     }
     reader.onerror = () => reject(new Error('Ошибка чтения файла'))

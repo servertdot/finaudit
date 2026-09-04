@@ -219,6 +219,30 @@ button:focus-visible {
     transform 100ms ease;
 }
 
+.action-bar .toolbar-button:not(:disabled):active,
+.action-bar .toolbar-button[data-state='open'] {
+  transform: none;
+  transition-duration: 160ms;
+}
+
+.dropdown-menu-content {
+  animation: none;
+  transition: none;
+}
+
+
+.toolbar-icon-button {
+  width: 2.2rem;
+  padding-inline: 0;
+}
+
+.action-bar .toolbar-icon-button:not(:disabled):active,
+.action-bar .toolbar-icon-button[data-state='open'] {
+  transform: none !important;
+  transition: none;
+}
+
+
 .toolbar-button-default {
   color: var(--color-ink-soft);
 }
