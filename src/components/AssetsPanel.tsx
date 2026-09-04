@@ -13,6 +13,10 @@ import { MoneyInput } from './MoneyInput'
 import { Panel } from './Panel'
 import { TrashIcon, WalletIcon } from './icons'
 import { AddAssetModal } from './AddEntryModal'
+import { Table } from './ui/table'
+import { Checkbox } from './ui/checkbox'
+import { Input } from './ui/input'
+import { Select } from './ui/select'
 
 interface AssetsPanelProps {
   items: AssetItem[]
@@ -47,7 +51,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
               aria-label="Активы — прокручиваемая таблица"
               tabIndex={0}
             >
-              <table className="data-table data-table-assets w-full border-collapse">
+              <Table className="data-table data-table-assets w-full border-collapse">
                 <colgroup>
                   <col className="col-asset-name" />
                   <col className="col-asset-type" />
@@ -78,15 +82,15 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                     return (
                       <tr key={item.id} className="border-t border-line align-top">
                         <td className="py-1.5 pr-2">
-                          <input
+                          <Input
                             value={item.name}
                             placeholder="Название"
                             onChange={(e) => onUpdate(item.id, { name: e.target.value })}
-                            className="field min-w-0 w-full border-transparent px-2 py-1.5 text-sm"
+                            className="min-w-0 border-transparent px-2 py-1.5"
                           />
                         </td>
                         <td className="py-1.5 pl-2">
-                          <select
+                          <Select
                             value={item.type}
                             onChange={(e) => {
                               const type = e.target.value as AssetType
@@ -97,19 +101,19 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                                 rate: hasYield(type) ? item.rate : undefined,
                               })
                             }}
-                            className="field min-w-0 w-full cursor-pointer px-2 py-1.5 text-sm text-ink-soft"
+                            className="min-w-0 px-2 py-1.5 text-ink-soft"
                           >
                             {ASSET_TYPES.map((type) => (
                               <option key={type} value={type}>
                                 {ASSET_TYPE_LABELS[type]}
                               </option>
                             ))}
-                          </select>
+                          </Select>
                         </td>
                         <td className="py-1.5 pl-2 text-right">
                           {yielding ? (
                             <>
-                              <input
+                              <Input
                                 type="number"
                                 inputMode="decimal"
                                 min={0}
@@ -125,7 +129,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                                   })
                                 }
                                 aria-label="Ставка % годовых"
-                                className="field min-w-0 w-full px-2.5 py-1.5 text-right text-sm tabular-nums"
+                                className="min-w-0 px-2.5 py-1.5 text-right tabular-nums"
                               />
                               {perMonth > 0 && (
                                 <span className="mt-1 block text-[11px] tabular-nums text-pos">
@@ -138,13 +142,12 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                           )}
                         </td>
                         <td className="py-1.5 pl-2 text-center">
-                          <input
-                            type="checkbox"
+                          <Checkbox
                             checked={item.liquid}
                             onChange={(e) => onUpdate(item.id, { liquid: e.target.checked })}
                             title="Учитывать в финансовой подушке"
                             aria-label="Учитывать в финансовой подушке"
-                            className="mt-2 h-4 w-4 cursor-pointer accent-ink"
+                            className="mt-2"
                           />
                         </td>
                         <td className="py-1.5 pl-2">
@@ -168,7 +171,7 @@ export function AssetsPanel({ items, onAdd, onUpdate, onRemove }: AssetsPanelPro
                     )
                   })}
                 </tbody>
-              </table>
+              </Table>
             </div>
 
             {totalAnnual > 0 && (

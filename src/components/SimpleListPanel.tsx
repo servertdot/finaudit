@@ -3,6 +3,7 @@ import { AddIncomeModal } from './AddEntryModal'
 import { MoneyInput } from './MoneyInput'
 import { Panel } from './Panel'
 import { TrashIcon } from './icons'
+import { Input } from './ui/input'
 
 interface SimpleItem {
   id: string
@@ -59,11 +60,11 @@ export function SimpleListPanel({
             )}
             {items.map((item) => (
               <div key={item.id} className="flex items-center gap-3">
-                <input
+                <Input
                   value={item.name}
                   placeholder="Название"
                   onChange={(e) => onUpdate(item.id, { name: e.target.value })}
-                  className="field min-w-0 flex-1 border-transparent px-2 py-1.5 text-sm"
+                  className="min-w-0 flex-1 border-transparent px-2 py-1.5"
                 />
                 <div className="w-28">
                   <MoneyInput

@@ -8,6 +8,10 @@ import {
   hasYield,
 } from '../lib/assets'
 import { MoneyInput } from './MoneyInput'
+import { Input } from './ui/input'
+import { Select } from './ui/select'
+import { Checkbox } from './ui/checkbox'
+import { Button } from './ui/button'
 
 interface ModalShellProps {
   open: boolean
@@ -93,29 +97,36 @@ function ModalShell({
               {description}
             </p>
           </div>
-          <button
+          <Button
             type="button"
             onClick={onClose}
             aria-label="Закрыть"
+            variant="ghost"
+            size="icon"
             className="modal-close"
           >
             <CloseIcon />
-          </button>
+          </Button>
         </header>
 
         <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
           <div className="modal-content flex flex-col gap-4 px-5 py-1 sm:px-6">{children}</div>
           <footer className="modal-footer mt-5 flex items-center justify-end gap-2 px-5 py-4 sm:px-6">
-            <button type="button" onClick={onClose} className="modal-button modal-button-secondary">
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="ghost"
+              className="modal-button modal-button-secondary"
+            >
               Отмена
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={submitDisabled}
               className="modal-button modal-button-primary"
             >
               {submitLabel}
-            </button>
+            </Button>
           </footer>
         </form>
       </section>
@@ -179,25 +190,25 @@ export function AddExpenseModal({ open, onClose, onAdd }: AddExpenseModalProps) 
       onSubmit={handleSubmit}
     >
       <FormField label="Категория">
-        <input
+        <Input
           autoFocus
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Например, жильё"
-          className="field min-h-11 px-3 text-[15px]"
+          className="min-h-11 px-3 text-[15px]"
         />
       </FormField>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <FormField label="Тип расхода">
-          <select
+          <Select
             value={type}
             onChange={(event) => setType(event.target.value as ExpenseType)}
-            className="field min-h-11 cursor-pointer px-3 text-[15px]"
+            className="min-h-11 px-3 text-[15px]"
           >
             <option value="FC">Постоянный (FC)</option>
             <option value="VC">Переменный (VC)</option>
-          </select>
+          </Select>
         </FormField>
         <FormField label="Сумма">
           <MoneyInput value={amount} onChange={setAmount} align="left" />
@@ -242,12 +253,12 @@ export function AddIncomeModal({ open, onClose, onAdd }: AddIncomeModalProps) {
       onSubmit={handleSubmit}
     >
       <FormField label="Источник дохода">
-        <input
+        <Input
           autoFocus
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Например, зарплата"
-          className="field min-h-11 px-3 text-[15px]"
+          className="min-h-11 px-3 text-[15px]"
         />
       </FormField>
       <FormField label="Сумма">
@@ -311,28 +322,28 @@ export function AddAssetModal({ open, onClose, onAdd }: AddAssetModalProps) {
       onSubmit={handleSubmit}
     >
       <FormField label="Название">
-        <input
+        <Input
           autoFocus
           value={name}
           onChange={(event) => setName(event.target.value)}
           placeholder="Например, накопительный счёт"
-          className="field min-h-11 px-3 text-[15px]"
+          className="min-h-11 px-3 text-[15px]"
         />
       </FormField>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <FormField label="Вид актива">
-          <select
+          <Select
             value={type}
             onChange={(event) => handleTypeChange(event.target.value as AssetType)}
-            className="field min-h-11 cursor-pointer px-3 text-[15px]"
+            className="min-h-11 px-3 text-[15px]"
           >
             {ASSET_TYPES.map((assetType) => (
               <option key={assetType} value={assetType}>
                 {ASSET_TYPE_LABELS[assetType]}
               </option>
             ))}
-          </select>
+          </Select>
         </FormField>
         <FormField label="Сумма">
           <MoneyInput value={amount} onChange={setAmount} align="left" />
@@ -341,7 +352,7 @@ export function AddAssetModal({ open, onClose, onAdd }: AddAssetModalProps) {
 
       {hasYield(type) && (
         <FormField label="Ставка, % годовых" hint="Используется для расчёта ожидаемого дохода.">
-          <input
+          <Input
             type="number"
             inputMode="decimal"
             min={0}
@@ -349,7 +360,7 @@ export function AddAssetModal({ open, onClose, onAdd }: AddAssetModalProps) {
             value={rate}
             onChange={(event) => setRate(event.target.value)}
             placeholder="0"
-            className="field min-h-11 px-3 text-[15px] tabular-nums"
+            className="min-h-11 px-3 text-[15px] tabular-nums"
           />
         </FormField>
       )}
@@ -361,11 +372,10 @@ export function AddAssetModal({ open, onClose, onAdd }: AddAssetModalProps) {
             Актив можно быстро использовать без существенных потерь.
           </span>
         </span>
-        <input
-          type="checkbox"
+        <Checkbox
           checked={liquid}
           onChange={(event) => setLiquid(event.target.checked)}
-          className="h-5 w-5 shrink-0 cursor-pointer"
+          className="size-5"
         />
       </label>
     </ModalShell>

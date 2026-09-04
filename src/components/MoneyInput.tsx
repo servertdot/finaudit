@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import { Input } from './ui/input'
 interface MoneyInputProps {
   value: number
   onChange: (value: number) => void
@@ -27,7 +27,7 @@ export function MoneyInput({
   }
 
   return (
-    <input
+    <Input
       type="number"
       inputMode="decimal"
       value={draft}
@@ -37,7 +37,7 @@ export function MoneyInput({
         setDraft(next)
         onChange(next === '' ? 0 : Number(next))
       }}
-      className={`field min-w-0 w-full px-2.5 py-1.5 text-sm tabular-nums ${
+      className={`min-w-0 px-2.5 py-1.5 tabular-nums ${
         align === 'right' ? 'text-right' : 'text-left'
       }`}
     />

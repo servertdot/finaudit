@@ -4,6 +4,9 @@ import { AddExpenseModal } from './AddEntryModal'
 import { MoneyInput } from './MoneyInput'
 import { Panel } from './Panel'
 import { TrashIcon, TrendDownIcon } from './icons'
+import { Table } from './ui/table'
+import { Input } from './ui/input'
+import { Select } from './ui/select'
 
 interface ExpensesPanelProps {
   items: ExpenseItem[]
@@ -35,7 +38,7 @@ export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPane
             aria-label="Расходы — прокручиваемая таблица"
             tabIndex={0}
           >
-            <table className="data-table data-table-expenses w-full border-collapse">
+            <Table className="data-table data-table-expenses w-full border-collapse">
               <colgroup>
                 <col className="col-expense-name" />
                 <col className="col-expense-type" />
@@ -54,24 +57,24 @@ export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPane
                 {items.map((item) => (
                   <tr key={item.id} className="border-t border-line">
                     <td className="py-1.5 pr-2">
-                      <input
+                      <Input
                         value={item.name}
                         placeholder="Категория"
                         onChange={(e) => onUpdate(item.id, { name: e.target.value })}
-                        className="field min-w-0 w-full border-transparent px-2 py-1.5 text-sm"
+                        className="min-w-0 border-transparent px-2 py-1.5"
                       />
                     </td>
                     <td className="py-1.5 pl-2">
-                      <select
+                      <Select
                         value={item.type}
                         onChange={(e) =>
                           onUpdate(item.id, { type: e.target.value as ExpenseType })
                         }
-                        className="field min-w-0 w-full cursor-pointer px-2 py-1.5 text-sm text-ink-soft"
+                        className="min-w-0 px-2 py-1.5 text-ink-soft"
                       >
                         <option value="FC">FC (Пост.)</option>
                         <option value="VC">VC (Перем.)</option>
-                      </select>
+                      </Select>
                     </td>
                     <td className="py-1.5 pl-2">
                       <MoneyInput
@@ -93,7 +96,7 @@ export function ExpensesPanel({ items, onAdd, onUpdate, onRemove }: ExpensesPane
                   </tr>
                 ))}
               </tbody>
-            </table>
+            </Table>
           </div>
         )}
       </Panel>

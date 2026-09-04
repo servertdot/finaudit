@@ -9,6 +9,8 @@ import {
   type ChartKey,
   type ChartType,
 } from '../lib/chartsConfig'
+import { Button } from './ui/button'
+import { Checkbox } from './ui/checkbox'
 
 interface ChartsToolbarProps {
   charts: ChartConfig[]
@@ -164,18 +166,20 @@ export function ChartsToolbar({
       />
 
       <div ref={ref} className="relative">
-        <button
+        <Button
           type="button"
+          variant="outline"
+          size="sm"
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
-          className="field flex items-center gap-2 px-3 py-1.5 text-[12px] text-ink-soft"
+          className="field h-auto min-h-0 px-3 py-1.5 text-[12px] text-ink-soft"
         >
           Графики
           <span className="rounded-full bg-line px-1.5 text-[11px] text-ink">
             {visibleCount}
           </span>
           <ChevronIcon open={open} />
-        </button>
+        </Button>
 
         {open && (
           <div className="popover absolute right-0 z-20 mt-2 w-[19rem] p-2">
@@ -199,11 +203,10 @@ export function ChartsToolbar({
                   className="flex flex-col gap-2 rounded-lg px-2 py-2 hover:bg-paper"
                 >
                   <label className="flex cursor-pointer items-center gap-2.5 text-[13px] text-ink">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       checked={chart.visible}
                       onChange={() => onToggleVisible(chart.key)}
-                      className="h-4 w-4 accent-[var(--color-pos)]"
+                      className="accent-pos"
                     />
                     {CHART_LABELS[chart.key]}
                   </label>

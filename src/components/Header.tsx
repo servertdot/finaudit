@@ -1,3 +1,4 @@
+import { Input } from './ui/input'
 interface HeaderProps {
   user: string
   onUserChange: (value: string) => void
@@ -16,12 +17,12 @@ export function Header({ user, onUserChange }: HeaderProps) {
 
       <label className="group flex min-w-48 flex-col gap-1.5">
         <span className="px-1 text-[12px] font-medium text-muted">Профиль</span>
-        <input
+        <Input
           value={user}
           onChange={(e) => onUserChange(e.target.value)}
           placeholder="Имя"
           aria-label="Пользователь"
-          className="field w-full px-3 py-2 text-[15px] font-medium placeholder:text-muted"
+          className="w-full py-2 text-[15px] font-medium"
         />
       </label>
     </header>

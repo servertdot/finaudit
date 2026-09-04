@@ -1,3 +1,5 @@
+import { Input } from './ui/input'
+import { Select } from './ui/select'
 import type { MonthlySnapshot } from '../types'
 import { compareMonthAsc, formatMonth } from '../lib/period'
 import {
@@ -57,18 +59,18 @@ export function PeriodBar({
         </button>
 
         <div className="relative">
-          <select
+          <Select
             value={activeMonth}
             onChange={(e) => onSelect(e.target.value)}
             aria-label="Текущий месяц"
-            className="field appearance-none px-4 py-1.5 text-center text-[14px] font-semibold"
+            className="appearance-none px-4 py-1.5 text-center text-[14px] font-semibold"
           >
             {sorted.map((m) => (
               <option key={m.month} value={m.month}>
                 {formatMonth(m.month)}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
 
         <button
@@ -82,12 +84,12 @@ export function PeriodBar({
         </button>
       </div>
 
-      <input
+      <Input
         value={note}
         onChange={(e) => onNoteChange(e.target.value)}
         placeholder="Заметка к месяцу (премия, отпуск…)"
         aria-label="Заметка к месяцу"
-        className="min-w-[12rem] flex-1 rounded-lg border border-transparent bg-transparent px-2.5 py-1.5 text-[13px] text-ink-soft transition-colors placeholder:text-muted hover:bg-[color-mix(in_srgb,var(--color-ink)_4%,transparent)] focus:border-line focus:bg-surface"
+        className="min-w-[12rem] flex-1 border-transparent bg-transparent px-2.5 py-1.5 text-[13px] text-ink-soft hover:bg-ink/4 focus:border-line focus:bg-surface"
       />
 
       <div className="flex items-center gap-2">
