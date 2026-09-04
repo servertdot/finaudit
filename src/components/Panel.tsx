@@ -72,18 +72,6 @@ export function Panel({
             <span>{title}</span>
           </CardTitle>
           <div className="flex items-center gap-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setExpanded((value) => !value)}
-              title={expanded ? 'Свернуть' : 'Открыть на весь экран'}
-              aria-label={expanded ? 'Свернуть' : 'Открыть на весь экран'}
-              aria-expanded={expanded}
-              className="icon-button"
-            >
-              {expanded ? <Minimize2 /> : <Maximize2 />}
-            </Button>
             {onAdd && (
               <Button
                 type="button"
@@ -107,6 +95,19 @@ export function Panel({
                 </svg>
               </Button>
             )}
+            {expanded && <span aria-hidden="true" className="mx-1 h-5 w-px bg-line" />}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setExpanded((value) => !value)}
+              title={expanded ? 'Свернуть' : 'Открыть на весь экран'}
+              aria-label={expanded ? 'Свернуть' : 'Открыть на весь экран'}
+              aria-expanded={expanded}
+              className="icon-button"
+            >
+              {expanded ? <Minimize2 /> : <Maximize2 />}
+            </Button>
           </div>
         </CardHeader>
         <CardContent className="panel-content">{children}</CardContent>
