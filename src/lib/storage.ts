@@ -30,6 +30,8 @@ function normalizeExpenses(raw: unknown): ExpenseItem[] {
       id: typeof obj.id === 'string' ? obj.id : uid(),
       name: typeof obj.name === 'string' ? obj.name : '',
       type: obj.type === 'VC' ? 'VC' : 'FC',
+      // Старые записи FC считаем необходимыми, VC — нет.
+      essential: typeof obj.essential === 'boolean' ? obj.essential : obj.type !== 'VC',
       amount: toNumber(obj.amount),
     }
   })

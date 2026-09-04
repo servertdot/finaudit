@@ -466,20 +466,26 @@ button:focus-visible {
 
 
 .data-table-expenses {
-  width: max(100%, 30rem);
-  min-width: 30rem;
+  width: max(100%, 28rem);
+  min-width: 28rem;
 }
 
 .data-table-expenses .col-expense-name {
-  width: 10rem;
+  width: 7.5rem;
 }
 
 .data-table-expenses .col-expense-type {
-  width: 9rem;
+  width: 7rem;
+}
+.data-table-expenses .col-expense-essential {
+  width: 4.5rem;
 }
 
 .data-table-expenses .col-expense-amount {
-  width: 8rem;
+  width: 6.5rem;
+}
+.data-table-expenses .col-table-action {
+  width: 2.5rem;
 }
 
 .data-table .col-table-action {

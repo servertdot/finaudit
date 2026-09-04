@@ -4,7 +4,7 @@ import { uid } from './id'
 import { currentMonthKey, prevMonth } from './period'
 
 interface MonthShape {
-  expenses: { name: string; type: 'FC' | 'VC'; amount: number }[]
+  expenses: { name: string; type: 'FC' | 'VC'; amount: number; essential?: boolean }[]
   incomes: { name: string; amount: number }[]
   assets: { name: string; type: AssetType; amount: number; liquid?: boolean; rate?: number }[]
 }
@@ -12,7 +12,7 @@ interface MonthShape {
 function buildSnapshot(month: string, shape: MonthShape): MonthlySnapshot {
   return {
     month,
-    expenses: shape.expenses.map((e) => ({ id: uid(), ...e })),
+    expenses: shape.expenses.map((e) => ({ id: uid(), essential: e.essential ?? e.type === 'FC', ...e })),
     incomes: shape.incomes.map((i) => ({ id: uid(), ...i })),
     assets: shape.assets.map((a) => ({
       ...a,

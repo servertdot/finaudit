@@ -4,6 +4,8 @@ export interface ExpenseItem {
   id: string
   name: string
   type: ExpenseType
+  /** Необходим ли расход для базовой жизни и продолжения работы. */
+  essential: boolean
   amount: number
 }
 

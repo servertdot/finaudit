@@ -162,11 +162,13 @@ interface AddExpenseModalProps {
 export function AddExpenseModal({ open, onClose, onAdd }: AddExpenseModalProps) {
   const [name, setName] = useState('')
   const [type, setType] = useState<ExpenseType>('FC')
+  const [essential, setEssential] = useState(true)
   const [amount, setAmount] = useState(0)
 
   const handleClose = () => {
     setName('')
     setType('FC')
+    setEssential(true)
     setAmount(0)
     onClose()
   }
@@ -175,7 +177,7 @@ export function AddExpenseModal({ open, onClose, onAdd }: AddExpenseModalProps) 
     event.preventDefault()
     const trimmedName = name.trim()
     if (!trimmedName) return
-    onAdd({ name: trimmedName, type, amount })
+    onAdd({ name: trimmedName, type, essential, amount })
     handleClose()
   }
 
@@ -209,6 +211,12 @@ export function AddExpenseModal({ open, onClose, onAdd }: AddExpenseModalProps) 
             <option value="FC">Постоянный (FC)</option>
             <option value="VC">Переменный (VC)</option>
           </Select>
+        </FormField>
+        <FormField label="Необходимый расход" hint="Жильё, базовые продукты, лекарства, транспорт">
+          <label className="flex min-h-11 items-center gap-2 rounded-[0.62rem] border border-line px-3 text-sm">
+            <Checkbox checked={essential} onChange={(event) => setEssential(event.target.checked)} />
+            Учитывать в минимальном бюджете
+          </label>
         </FormField>
         <FormField label="Сумма">
           <MoneyInput value={amount} onChange={setAmount} align="left" />

@@ -21,9 +21,9 @@ export interface RuleSlice {
 
 export interface HealthReport {
   metrics: HealthMetric[]
-  /** Правило 50/30/20: нужды (FC) / желания (VC) / сбережения. */
+  /** Структура бюджета 50/30/20: необходимое / желания / остаток. */
   rule: RuleSlice[]
-  /** Общая оценка: доля «хороших» метрик, 0..100. */
+  /** Плавная оценка метрик, 0..100; нейтральные метрики исключены. */
   score: number
 }
 
@@ -34,12 +34,13 @@ const sum = (items: { amount: number }[]) =>
   items.reduce((acc, item) => acc + (Number.isFinite(item.amount) ? item.amount : 0), 0)
 
 export function computeHealth(state: FinanceState, summary: Summary): HealthReport {
-  const { income, expenses, net, fixed, variable } = summary
-  // Для подушки считаем только ликвидные активы: вклад под процент
-  // и инвестиции обычно недоступны мгновенно, поэтому в запас не идут.
+  const { income, expenses, net } = summary
+  // Подушка должна покрывать минимальный бюджет, а не только регулярные FC.
+  const essential = sum(state.expenses.filter((e) => e.essential))
   const assets = sum(state.assets.filter((a) => a.liquid))
 
-  // --- Норма сбережений: какая доля дохода остаётся ---
+  // Остаток после расходов — прокси нормы сбережений, пока сбережения
+  // не выделены в отдельную операцию.
   const savingsRate = income > 0 ? (net / income) * 100 : 0
   const savingsMetric: HealthMetric = {
     id: 'savings',
@@ -60,10 +61,10 @@ export function computeHealth(state: FinanceState, summary: Summary): HealthRepo
     progress: clamp(savingsRate),
   }
 
-  // --- Финансовая подушка: на сколько месяцев хватит активов ---
-  const runway = fixed > 0 ? assets / fixed : assets > 0 ? Infinity : 0
+  // --- Финансовая подушка: на сколько месяцев хватит ликвидных активов ---
+  const runway = essential > 0 ? assets / essential : assets > 0 ? Infinity : 0
   const runwayDisplay =
-    fixed <= 0
+    essential <= 0
       ? assets > 0
         ? '∞'
         : '—'
@@ -73,7 +74,7 @@ export function computeHealth(state: FinanceState, summary: Summary): HealthRepo
     label: 'Финансовая подушка',
     display: runwayDisplay,
     status:
-      fixed <= 0
+      essential <= 0
         ? assets > 0
           ? 'good'
           : 'neutral'
@@ -83,10 +84,10 @@ export function computeHealth(state: FinanceState, summary: Summary): HealthRepo
             ? 'warn'
             : 'bad',
     hint:
-      fixed <= 0
-        ? 'Нет постоянных расходов для расчёта'
+      essential <= 0
+        ? 'Добавьте необходимые расходы для расчёта'
         : runway >= 6
-          ? 'Хватит на 6+ месяцев без дохода'
+          ? 'Хватит на 6+ месяцев минимального бюджета'
           : runway >= 3
             ? 'Желательно накопить на 6 месяцев'
             : 'Подушки почти нет — цель 3–6 месяцев',
@@ -112,26 +113,26 @@ export function computeHealth(state: FinanceState, summary: Summary): HealthRepo
     progress: clamp(expenseRatio),
   }
 
-  // --- Правило 50/30/20 ---
-  const needsShare = income > 0 ? (fixed / income) * 100 : 0
-  const wantsShare = income > 0 ? (variable / income) * 100 : 0
+  // --- Структура бюджета вместо механического FC/VC ---
+  const needsShare = income > 0 ? (essential / income) * 100 : 0
+  const wantsShare = income > 0 ? ((expenses - essential) / income) * 100 : 0
   const savingsShare = income > 0 ? (net / income) * 100 : 0
 
   const rule: RuleSlice[] = [
     {
-      label: 'Нужды (FC)',
+      label: 'Необходимое',
       share: needsShare,
       target: 50,
       status: income <= 0 ? 'neutral' : needsShare <= 50 ? 'good' : needsShare <= 60 ? 'warn' : 'bad',
     },
     {
-      label: 'Желания (VC)',
+      label: 'Желания',
       share: wantsShare,
       target: 30,
       status: income <= 0 ? 'neutral' : wantsShare <= 30 ? 'good' : wantsShare <= 40 ? 'warn' : 'bad',
     },
     {
-      label: 'Сбережения',
+      label: 'Остаток / сбережения',
       share: savingsShare,
       target: 20,
       status:
@@ -141,8 +142,14 @@ export function computeHealth(state: FinanceState, summary: Summary): HealthRepo
 
   const metrics = [savingsMetric, runwayMetric, expenseMetric]
   const rated = metrics.filter((m) => m.status !== 'neutral')
-  const goodCount = rated.filter((m) => m.status === 'good').length
-  const score = rated.length > 0 ? Math.round((goodCount / rated.length) * 100) : 0
+  const metricScores = rated.map((metric) => {
+    if (metric.id === 'savings') return clamp((savingsRate / 20) * 100)
+    if (metric.id === 'runway') return Number.isFinite(runway) ? clamp((runway / 6) * 100) : 100
+    return clamp(((100 - expenseRatio) / 30) * 100)
+  })
+  const score = metricScores.length > 0
+    ? Math.round(metricScores.reduce((total, value) => total + value, 0) / metricScores.length)
+    : 0
 
   return { metrics, rule, score }
 }
